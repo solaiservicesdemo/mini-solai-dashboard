@@ -57,6 +57,20 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Custom dashboard colors
+        dashboard: {
+          "gradient-from": "hsl(var(--dashboard-gradient-from))",
+          "gradient-to": "hsl(var(--dashboard-gradient-to))",
+        },
+        success: "hsl(var(--success))",
+        warning: "hsl(var(--warning))",
+        info: "hsl(var(--info))",
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+      },
+      backdropBlur: {
+        xs: '2px',
       },
       borderRadius: {
         lg: "var(--radius)",
