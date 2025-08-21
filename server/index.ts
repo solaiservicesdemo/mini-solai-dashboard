@@ -33,6 +33,7 @@ export function createServer() {
   app.post("/api/propose-times", handleProposeTimes);
   app.post("/api/schedule-followup", handleScheduleFollowup);
   app.post("/api/run-invoice-reminders", handleRunInvoiceReminders);
+  app.post("/api/sync-calendar-events", handleSyncCalendarEvents);
 
   return app;
 }
