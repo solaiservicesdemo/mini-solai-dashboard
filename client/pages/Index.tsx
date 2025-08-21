@@ -33,6 +33,7 @@ interface CalendarEvent {
   id: string;
   title: string;
   time: string;
+  start?: string;
   attendees: string[];
   meetLink?: string;
   location?: string;
@@ -52,7 +53,8 @@ const mockEvents: CalendarEvent[] = [
   {
     id: "1",
     title: "Discovery call – Priya",
-    time: "10:30 AM - 11:00 AM",
+    time: "Today 10:30 AM - 11:00 AM",
+    start: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours from now
     attendees: ["priya@example.com"],
     meetLink: "https://meet.google.com/xyz",
     location: "Google Meet",
@@ -60,15 +62,33 @@ const mockEvents: CalendarEvent[] = [
   {
     id: "2",
     title: "Team standup",
-    time: "2:00 PM - 2:30 PM",
+    time: "Tomorrow 2:00 PM - 2:30 PM",
+    start: new Date(Date.now() + 26 * 60 * 60 * 1000).toISOString(), // Tomorrow
     attendees: ["team@solai.com"],
     meetLink: "https://meet.google.com/abc",
   },
   {
     id: "3",
     title: "Client presentation",
-    time: "4:00 PM - 5:00 PM",
+    time: "Thu 4:00 PM - 5:00 PM",
+    start: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days from now
     attendees: ["client@acme.com", "john@acme.com"],
+  },
+  {
+    id: "4",
+    title: "Monthly review meeting",
+    time: "Next week Mon 9:00 AM - 10:00 AM",
+    start: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(), // 10 days from now
+    attendees: ["team@solai.com", "manager@solai.com"],
+    meetLink: "https://meet.google.com/review",
+  },
+  {
+    id: "5",
+    title: "Quarterly planning session",
+    time: "Feb 15 2:00 PM - 4:00 PM",
+    start: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(), // 3 weeks from now
+    attendees: ["leadership@solai.com"],
+    meetLink: "https://meet.google.com/planning",
   },
 ];
 
