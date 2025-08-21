@@ -138,13 +138,13 @@ export default function Dashboard() {
   const [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
-      id: '1',
-      text: 'Hello! I\'m your AI assistant. How can I help you manage your business today?',
+      id: "1",
+      text: "Hello! I'm your AI assistant. How can I help you manage your business today?",
       isUser: false,
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    },
   ]);
-  const [chatInput, setChatInput] = useState('');
+  const [chatInput, setChatInput] = useState("");
 
   const handleEmailAttendees = (eventId: string) => {
     console.log("Email attendees for event:", eventId);
@@ -165,22 +165,22 @@ export default function Dashboard() {
       id: Date.now().toString(),
       text: chatInput,
       isUser: true,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
-    setChatMessages(prev => [...prev, newMessage]);
-    setChatInput('');
+    setChatMessages((prev) => [...prev, newMessage]);
+    setChatInput("");
 
     // TODO: Add LLM integration here later
     // For now, just simulate a response
     setTimeout(() => {
       const aiResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        text: 'Thanks for your message! LLM functionality will be added soon.',
+        text: "Thanks for your message! LLM functionality will be added soon.",
         isUser: false,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      setChatMessages(prev => [...prev, aiResponse]);
+      setChatMessages((prev) => [...prev, aiResponse]);
     }, 1000);
   };
 
@@ -269,20 +269,20 @@ export default function Dashboard() {
                     {chatMessages.map((message) => (
                       <div
                         key={message.id}
-                        className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+                        className={`flex ${message.isUser ? "justify-end" : "justify-start"}`}
                       >
                         <div
                           className={`max-w-[80%] p-3 rounded-lg ${
                             message.isUser
-                              ? 'bg-blue-600 text-white'
-                              : 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100'
+                              ? "bg-blue-600 text-white"
+                              : "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                           }`}
                         >
                           <p className="text-sm">{message.text}</p>
                           <p className="text-xs opacity-70 mt-1">
                             {message.timestamp.toLocaleTimeString([], {
-                              hour: '2-digit',
-                              minute: '2-digit'
+                              hour: "2-digit",
+                              minute: "2-digit",
                             })}
                           </p>
                         </div>
@@ -298,7 +298,7 @@ export default function Dashboard() {
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyPress={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
+                      if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
                         handleSendMessage();
                       }

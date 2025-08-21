@@ -1,8 +1,13 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { X, Reply, Star } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { X, Reply, Star } from "lucide-react";
 
 interface RecentEmailsModalProps {
   open: boolean;
@@ -65,7 +70,10 @@ const mockEmails: EmailThread[] = [
   },
 ];
 
-export function RecentEmailsModal({ open, onOpenChange }: RecentEmailsModalProps) {
+export function RecentEmailsModal({
+  open,
+  onOpenChange,
+}: RecentEmailsModalProps) {
   const handleFollowUp = (emailId: string, days: number) => {
     console.log(`Follow up on email ${emailId} in ${days} days`);
   };
@@ -113,8 +121,12 @@ export function RecentEmailsModal({ open, onOpenChange }: RecentEmailsModalProps
                       </Avatar>
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-sm">{email.from}</span>
-                          <span className="text-xs text-slate-500">{email.time}</span>
+                          <span className="font-medium text-sm">
+                            {email.from}
+                          </span>
+                          <span className="text-xs text-slate-500">
+                            {email.time}
+                          </span>
                         </div>
                         <div className="font-medium text-sm text-slate-900 dark:text-slate-100 mt-1">
                           {email.subject}
