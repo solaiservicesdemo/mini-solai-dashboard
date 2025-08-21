@@ -158,6 +158,32 @@ export default function Dashboard() {
     console.log(`Follow up on email ${emailId} in ${days} days`);
   };
 
+  const handleSendMessage = () => {
+    if (!chatInput.trim()) return;
+
+    const newMessage: ChatMessage = {
+      id: Date.now().toString(),
+      text: chatInput,
+      isUser: true,
+      timestamp: new Date()
+    };
+
+    setChatMessages(prev => [...prev, newMessage]);
+    setChatInput('');
+
+    // TODO: Add LLM integration here later
+    // For now, just simulate a response
+    setTimeout(() => {
+      const aiResponse: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        text: 'Thanks for your message! LLM functionality will be added soon.',
+        isUser: false,
+        timestamp: new Date()
+      };
+      setChatMessages(prev => [...prev, aiResponse]);
+    }, 1000);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
       {/* Header */}
