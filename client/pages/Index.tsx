@@ -145,10 +145,10 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-6">
-        <div className="grid grid-cols-12 gap-6 h-[calc(100vh-8rem)]">
-          {/* Left Sidebar - Quick Actions */}
-          <div className="col-span-3">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 min-h-[calc(100vh-8rem)]">
+          {/* Quick Actions - Mobile: Full width, Desktop: Left sidebar */}
+          <div className="lg:col-span-3 order-1 lg:order-1">
             <Card className="h-full">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">Quick Actions</CardTitle>
@@ -185,8 +185,8 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          {/* Center Content */}
-          <div className="col-span-6 space-y-6 overflow-y-auto">
+          {/* Center Content - Mobile: Full width, Desktop: Main content */}
+          <div className="lg:col-span-6 space-y-4 sm:space-y-6 overflow-y-auto order-3 lg:order-2">
             {/* Today's Calendar */}
             <Card>
               <CardHeader className="pb-3">
