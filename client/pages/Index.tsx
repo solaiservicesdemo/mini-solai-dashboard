@@ -254,38 +254,65 @@ export default function Dashboard() {
 
           {/* Center Content - Mobile: Full width, Desktop: Main content */}
           <div className="lg:col-span-6 space-y-4 sm:space-y-6 overflow-y-auto order-3 lg:order-2">
-            {/* Today's Calendar */}
-            <Card>
+            {/* Chat Section */}
+            <Card className="h-[400px] sm:h-[500px] flex flex-col">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center">
-                  <Calendar className="mr-2 h-5 w-5" />
-                  Today - Next 6 Hours
+                  <MessageSquare className="mr-2 h-5 w-5" />
+                  AI Assistant
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {mockEvents.map((event) => (
-                    <div
-                      key={event.id}
-                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800"
-                    >
-                      <div className="flex-1">
-                        <div className="font-medium">{event.title}</div>
-                        <div className="text-sm text-slate-600 dark:text-slate-400">
-                          {event.time}
-                        </div>
-                        <div className="text-xs text-slate-500 mt-1">
-                          {event.attendees.join(", ")}
+              <CardContent className="flex-1 flex flex-col min-h-0">
+                {/* Chat Messages */}
+                <ScrollArea className="flex-1 mb-4">
+                  <div className="space-y-3">
+                    {chatMessages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div
+                          className={`max-w-[80%] p-3 rounded-lg ${
+                            message.isUser
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100'
+                          }`}
+                        >
+                          <p className="text-sm">{message.text}</p>
+                          <p className="text-xs opacity-70 mt-1">
+                            {message.timestamp.toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
                         </div>
                       </div>
-                      {event.meetLink && (
-                        <Button size="sm" variant="outline" className="ml-3">
-                          <Video className="mr-1 h-3 w-3" />
-                          Join
-                        </Button>
-                      )}
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                </ScrollArea>
+
+                {/* Chat Input */}
+                <div className="flex space-x-2">
+                  <Input
+                    placeholder="Ask me anything..."
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
+                    className="flex-1"
+                  />
+                  <Button
+                    size="sm"
+                    onClick={handleSendMessage}
+                    disabled={!chatInput.trim()}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
                 </div>
               </CardContent>
             </Card>
