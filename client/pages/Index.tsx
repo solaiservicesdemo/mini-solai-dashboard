@@ -300,52 +300,143 @@ export default function Dashboard() {
             <Card className="h-full">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">Notifications</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Next 72 hours
-                </p>
               </CardHeader>
-              <CardContent className="space-y-3 overflow-y-auto">
-                {mockEvents.map((event) => (
-                  <div
-                    key={event.id}
-                    className="p-3 border rounded-lg space-y-2"
-                  >
-                    <div className="text-sm font-medium">{event.title}</div>
-                    <div className="text-xs text-slate-600 dark:text-slate-400">
-                      {event.time}
-                    </div>
-                    <div className="space-y-1">
-                      {event.meetLink && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="w-full text-xs"
-                        >
-                          <Video className="mr-1 h-3 w-3" />
-                          Join
-                        </Button>
-                      )}
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="w-full text-xs"
-                        onClick={() => handleEmailAttendees(event.id)}
-                      >
-                        <Users className="mr-1 h-3 w-3" />
-                        Email Attendees
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="w-full text-xs"
-                        onClick={() => handleSnoozeReminder(event.id)}
-                      >
-                        <Clock className="mr-1 h-3 w-3" />
-                        Snooze 15m
-                      </Button>
-                    </div>
+              <CardContent className="space-y-4 overflow-y-auto">
+                {/* This Week Section */}
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <h4 className="font-medium text-sm">This Week</h4>
+                    <Badge variant="secondary" className="text-xs">
+                      {mockEvents.filter(event => {
+                        const eventDate = new Date(event.start || Date.now());
+                        const today = new Date();
+                        const weekEnd = new Date(today);
+                        weekEnd.setDate(today.getDate() + 7);
+                        return eventDate <= weekEnd;
+                      }).length}
+                    </Badge>
                   </div>
-                ))}
+                  {mockEvents
+                    .filter(event => {
+                      const eventDate = new Date(event.start || Date.now());
+                      const today = new Date();
+                      const weekEnd = new Date(today);
+                      weekEnd.setDate(today.getDate() + 7);
+                      return eventDate <= weekEnd;
+                    })
+                    .map((event) => (
+                      <div
+                        key={event.id}
+                        className="p-3 border rounded-lg space-y-2 bg-blue-50/50 dark:bg-blue-900/20"
+                      >
+                        <div className="text-sm font-medium">{event.title}</div>
+                        <div className="text-xs text-slate-600 dark:text-slate-400">
+                          {event.time}
+                        </div>
+                        <div className="space-y-1">
+                          {event.meetLink && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="w-full text-xs"
+                            >
+                              <Video className="mr-1 h-3 w-3" />
+                              Join
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="w-full text-xs"
+                            onClick={() => handleEmailAttendees(event.id)}
+                          >
+                            <Users className="mr-1 h-3 w-3" />
+                            Email Attendees
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="w-full text-xs"
+                            onClick={() => handleSnoozeReminder(event.id)}
+                          >
+                            <Clock className="mr-1 h-3 w-3" />
+                            Snooze 15m
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                {/* Later Section */}
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <h4 className="font-medium text-sm">Later</h4>
+                    <Badge variant="outline" className="text-xs">
+                      {mockEvents.filter(event => {
+                        const eventDate = new Date(event.start || Date.now());
+                        const weekEnd = new Date();
+                        weekEnd.setDate(weekEnd.getDate() + 7);
+                        return eventDate > weekEnd;
+                      }).length}
+                    </Badge>
+                  </div>
+                  {mockEvents
+                    .filter(event => {
+                      const eventDate = new Date(event.start || Date.now());
+                      const weekEnd = new Date();
+                      weekEnd.setDate(weekEnd.getDate() + 7);
+                      return eventDate > weekEnd;
+                    })
+                    .map((event) => (
+                      <div
+                        key={event.id}
+                        className="p-3 border rounded-lg space-y-2"
+                      >
+                        <div className="text-sm font-medium">{event.title}</div>
+                        <div className="text-xs text-slate-600 dark:text-slate-400">
+                          {event.time}
+                        </div>
+                        <div className="space-y-1">
+                          {event.meetLink && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="w-full text-xs"
+                            >
+                              <Video className="mr-1 h-3 w-3" />
+                              Join
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="w-full text-xs"
+                            onClick={() => handleEmailAttendees(event.id)}
+                          >
+                            <Users className="mr-1 h-3 w-3" />
+                            Email Attendees
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="w-full text-xs"
+                            onClick={() => handleSnoozeReminder(event.id)}
+                          >
+                            <Clock className="mr-1 h-3 w-3" />
+                            Snooze 15m
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  {mockEvents.filter(event => {
+                    const eventDate = new Date(event.start || Date.now());
+                    const weekEnd = new Date();
+                    weekEnd.setDate(weekEnd.getDate() + 7);
+                    return eventDate > weekEnd;
+                  }).length === 0 && (
+                    <p className="text-xs text-slate-500 italic">No events scheduled</p>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </div>
