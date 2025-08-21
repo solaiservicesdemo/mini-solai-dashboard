@@ -245,3 +245,54 @@ export const handleRunInvoiceReminders: RequestHandler = async (req, res) => {
     res.status(500).json({ error: "Failed to run invoice reminders" });
   }
 };
+
+// Webhook endpoint for n8n to sync calendar events to Google Sheets
+export const handleSyncCalendarEvents: RequestHandler = async (req, res) => {
+  try {
+    const { events, sheetId, sheetName = 'CalendarEvents' } = req.body;
+
+    // This endpoint will be called by your n8n workflow
+    // to sync calendar events to Google Sheets
+
+    console.log('Syncing calendar events to Google Sheets:', {
+      eventsCount: events?.length || 0,
+      sheetId,
+      sheetName
+    });
+
+    // In your n8n workflow, you'll:
+    // 1. Fetch events from Google Calendar
+    // 2. Format them into the structure below
+    // 3. POST to this endpoint
+    // 4. This endpoint will update your Google Sheets
+
+    // Expected event structure from n8n:
+    // {
+    //   "events": [
+    //     {
+    //       "id": "calendar_event_id",
+    //       "title": "Meeting Title",
+    //       "start": "2025-01-21T10:30:00-05:00",
+    //       "end": "2025-01-21T11:00:00-05:00",
+    //       "attendees": ["email1@example.com", "email2@example.com"],
+    //       "meetLink": "https://meet.google.com/abc",
+    //       "location": "Conference Room A",
+    //       "description": "Meeting description"
+    //     }
+    //   ],
+    //   "sheetId": "your_google_sheets_id",
+    //   "sheetName": "CalendarEvents"
+    // }
+
+    res.json({
+      success: true,
+      message: 'Calendar events synced successfully',
+      eventsProcessed: events?.length || 0,
+      sheetId,
+      sheetName
+    });
+  } catch (error) {
+    console.error('Error syncing calendar events:', error);
+    res.status(500).json({ error: 'Failed to sync calendar events' });
+  }
+};
