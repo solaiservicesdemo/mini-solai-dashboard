@@ -294,8 +294,8 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          {/* Right Sidebar - Notifications */}
-          <div className="col-span-3">
+          {/* Notifications Sidebar - Mobile: Full width, Desktop: Right sidebar */}
+          <div className="lg:col-span-3 order-2 lg:order-3">
             <Card className="h-full">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">Notifications</CardTitle>
