@@ -91,15 +91,17 @@ export const handleSendTemplate: RequestHandler = async (req, res) => {
   }
 };
 
-// Get today's events webhook endpoint
+// Get events organized by "This Week" and "Later" webhook endpoint
 export const handleGetEventsToday: RequestHandler = async (req, res) => {
   try {
-    const { rangeHours = 72 } = req.query;
+    // In real implementation, this would read from your Google Sheets
+    // that gets populated by your n8n workflow
+    const now = new Date();
+    const weekEnd = new Date(now);
+    weekEnd.setDate(now.getDate() + 7);
 
-    // In real implementation, this would call Google Calendar API
     const events = mockCalendarEvents.map((event) => ({
       ...event,
-      // Add some computed fields
       timeUntilStart: new Date(event.start).getTime() - Date.now(),
       formattedTime: new Date(event.start).toLocaleTimeString("en-US", {
         hour: "numeric",
@@ -108,10 +110,21 @@ export const handleGetEventsToday: RequestHandler = async (req, res) => {
       }),
     }));
 
+    // Separate events into "This Week" and "Later"
+    const thisWeekEvents = events.filter(event => {
+      const eventDate = new Date(event.start);
+      return eventDate <= weekEnd;
+    }).sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+
+    const laterEvents = events.filter(event => {
+      const eventDate = new Date(event.start);
+      return eventDate > weekEnd;
+    }).sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+
     res.json({
-      events: events.sort(
-        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
-      ),
+      thisWeek: thisWeekEvents,
+      later: laterEvents,
+      total: events.length
     });
   } catch (error) {
     console.error("Error fetching events:", error);
