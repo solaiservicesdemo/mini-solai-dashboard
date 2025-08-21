@@ -1,12 +1,23 @@
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { X, Calendar, Clock, Send, Users } from 'lucide-react';
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { X, Calendar, Clock, Send, Users } from "lucide-react";
 
 interface CalendarSchedulerModalProps {
   open: boolean;
@@ -21,61 +32,64 @@ interface TimeSlot {
 }
 
 const durationOptions = [
-  { value: '15', label: '15 minutes' },
-  { value: '30', label: '30 minutes' },
-  { value: '45', label: '45 minutes' },
-  { value: '60', label: '1 hour' },
-  { value: '90', label: '1.5 hours' },
-  { value: '120', label: '2 hours' }
+  { value: "15", label: "15 minutes" },
+  { value: "30", label: "30 minutes" },
+  { value: "45", label: "45 minutes" },
+  { value: "60", label: "1 hour" },
+  { value: "90", label: "1.5 hours" },
+  { value: "120", label: "2 hours" },
 ];
 
 const timeRangeOptions = [
-  { value: 'today', label: 'Today' },
-  { value: 'tomorrow', label: 'Tomorrow' },
-  { value: 'this_week', label: 'This week' },
-  { value: 'next_week', label: 'Next week' },
-  { value: 'custom', label: 'Custom range' }
+  { value: "today", label: "Today" },
+  { value: "tomorrow", label: "Tomorrow" },
+  { value: "this_week", label: "This week" },
+  { value: "next_week", label: "Next week" },
+  { value: "custom", label: "Custom range" },
 ];
 
 // Mock suggested time slots (these would normally come from your n8n flow)
 const mockSuggestedSlots: TimeSlot[] = [
   {
-    id: '1',
-    start: '2025-01-21T10:30:00-05:00',
-    end: '2025-01-21T11:00:00-05:00',
-    formatted: 'Wed Jan 21, 10:30–11:00 AM ET'
+    id: "1",
+    start: "2025-01-21T10:30:00-05:00",
+    end: "2025-01-21T11:00:00-05:00",
+    formatted: "Wed Jan 21, 10:30–11:00 AM ET",
   },
   {
-    id: '2',
-    start: '2025-01-21T14:00:00-05:00',
-    end: '2025-01-21T14:30:00-05:00',
-    formatted: 'Wed Jan 21, 2:00–2:30 PM ET'
+    id: "2",
+    start: "2025-01-21T14:00:00-05:00",
+    end: "2025-01-21T14:30:00-05:00",
+    formatted: "Wed Jan 21, 2:00–2:30 PM ET",
   },
   {
-    id: '3',
-    start: '2025-01-22T09:45:00-05:00',
-    end: '2025-01-22T10:15:00-05:00',
-    formatted: 'Thu Jan 22, 9:45–10:15 AM ET'
-  }
+    id: "3",
+    start: "2025-01-22T09:45:00-05:00",
+    end: "2025-01-22T10:15:00-05:00",
+    formatted: "Thu Jan 22, 9:45–10:15 AM ET",
+  },
 ];
 
-export function CalendarSchedulerModal({ open, onOpenChange }: CalendarSchedulerModalProps) {
-  const [to, setTo] = useState('');
-  const [duration, setDuration] = useState('30');
-  const [timeRange, setTimeRange] = useState('this_week');
-  const [meetingTitle, setMeetingTitle] = useState('');
-  const [meetingNotes, setMeetingNotes] = useState('');
-  const [customStartDate, setCustomStartDate] = useState('');
-  const [customEndDate, setCustomEndDate] = useState('');
+export function CalendarSchedulerModal({
+  open,
+  onOpenChange,
+}: CalendarSchedulerModalProps) {
+  const [to, setTo] = useState("");
+  const [duration, setDuration] = useState("30");
+  const [timeRange, setTimeRange] = useState("this_week");
+  const [meetingTitle, setMeetingTitle] = useState("");
+  const [meetingNotes, setMeetingNotes] = useState("");
+  const [customStartDate, setCustomStartDate] = useState("");
+  const [customEndDate, setCustomEndDate] = useState("");
   const [suggestedSlots, setSuggestedSlots] = useState<TimeSlot[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState<'compose' | 'review'>('compose');
+  const [step, setStep] = useState<"compose" | "review">("compose");
 
   const handleGenerateSlots = async () => {
     if (!to || !meetingTitle) return;
 
     setIsLoading(true);
-    
+
     try {
       // This would typically call your n8n webhook to generate time slots
       const requestData = {
@@ -85,15 +99,15 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
         customStartDate,
         customEndDate,
         title: meetingTitle,
-        notes: meetingNotes
+        notes: meetingNotes,
       };
 
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       setSuggestedSlots(mockSuggestedSlots);
-      setStep('review');
+      setStep("review");
     } catch (error) {
-      console.error('Failed to generate time slots:', error);
+      console.error("Failed to generate time slots:", error);
     } finally {
       setIsLoading(false);
     }
@@ -101,48 +115,48 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
 
   const handleSendProposal = async () => {
     setIsLoading(true);
-    
+
     try {
       const proposalData = {
         to,
         meetingTitle,
         meetingNotes,
         suggestedSlots,
-        duration: parseInt(duration)
+        duration: parseInt(duration),
       };
 
       // This would call your n8n webhook to send the email proposal
-      const response = await fetch('/api/propose-times', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(proposalData)
+      const response = await fetch("/api/propose-times", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(proposalData),
       });
 
       if (response.ok) {
         handleClose();
       }
     } catch (error) {
-      console.error('Failed to send proposal:', error);
+      console.error("Failed to send proposal:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleClose = () => {
-    setTo('');
-    setDuration('30');
-    setTimeRange('this_week');
-    setMeetingTitle('');
-    setMeetingNotes('');
-    setCustomStartDate('');
-    setCustomEndDate('');
+    setTo("");
+    setDuration("30");
+    setTimeRange("this_week");
+    setMeetingTitle("");
+    setMeetingNotes("");
+    setCustomStartDate("");
+    setCustomEndDate("");
     setSuggestedSlots([]);
-    setStep('compose');
+    setStep("compose");
     onOpenChange(false);
   };
 
   const handleBack = () => {
-    setStep('compose');
+    setStep("compose");
     setSuggestedSlots([]);
   };
 
@@ -164,7 +178,7 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
           </DialogTitle>
         </DialogHeader>
 
-        {step === 'compose' && (
+        {step === "compose" && (
           <div className="space-y-6">
             {/* Recipient */}
             <div className="space-y-2">
@@ -197,7 +211,7 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {durationOptions.map(option => (
+                  {durationOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
@@ -214,7 +228,7 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {timeRangeOptions.map(option => (
+                  {timeRangeOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
@@ -224,7 +238,7 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
             </div>
 
             {/* Custom Date Range */}
-            {timeRange === 'custom' && (
+            {timeRange === "custom" && (
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="start-date">Start Date</Label>
@@ -262,7 +276,8 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
             {/* Working Hours Info */}
             <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
               <div className="text-sm">
-                <strong>Working Hours:</strong> Mon–Fri, 9:30 AM – 5:30 PM ET<br />
+                <strong>Working Hours:</strong> Mon–Fri, 9:30 AM – 5:30 PM ET
+                <br />
                 <strong>Buffer:</strong> 15 minutes between meetings
               </div>
             </div>
@@ -272,8 +287,8 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
               <Button variant="outline" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button 
-                onClick={handleGenerateSlots} 
+              <Button
+                onClick={handleGenerateSlots}
                 disabled={!to || !meetingTitle || isLoading}
                 className="bg-blue-600 hover:bg-blue-700"
               >
@@ -290,14 +305,24 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
           </div>
         )}
 
-        {step === 'review' && (
+        {step === "review" && (
           <div className="space-y-6">
             {/* Meeting Summary */}
             <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg space-y-2">
-              <div><strong>Meeting:</strong> {meetingTitle}</div>
-              <div><strong>Recipient:</strong> {to}</div>
-              <div><strong>Duration:</strong> {duration} minutes</div>
-              {meetingNotes && <div><strong>Notes:</strong> {meetingNotes}</div>}
+              <div>
+                <strong>Meeting:</strong> {meetingTitle}
+              </div>
+              <div>
+                <strong>Recipient:</strong> {to}
+              </div>
+              <div>
+                <strong>Duration:</strong> {duration} minutes
+              </div>
+              {meetingNotes && (
+                <div>
+                  <strong>Notes:</strong> {meetingNotes}
+                </div>
+              )}
             </div>
 
             {/* Suggested Time Slots */}
@@ -305,7 +330,10 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
               <Label>Suggested Time Slots</Label>
               <div className="space-y-2">
                 {suggestedSlots.map((slot, index) => (
-                  <div key={slot.id} className="flex items-center p-3 border rounded-lg">
+                  <div
+                    key={slot.id}
+                    className="flex items-center p-3 border rounded-lg"
+                  >
                     <Badge variant="outline" className="mr-3">
                       Option {index + 1}
                     </Badge>
@@ -320,26 +348,29 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
               <Label>Email Preview</Label>
               <div className="border rounded-lg p-4 bg-slate-50 dark:bg-slate-800 space-y-3">
                 <div>
-                  <Label className="text-xs text-slate-600 dark:text-slate-400">Subject:</Label>
-                  <div className="font-medium">Meeting invitation: {meetingTitle}</div>
+                  <Label className="text-xs text-slate-600 dark:text-slate-400">
+                    Subject:
+                  </Label>
+                  <div className="font-medium">
+                    Meeting invitation: {meetingTitle}
+                  </div>
                 </div>
                 <div>
-                  <Label className="text-xs text-slate-600 dark:text-slate-400">Body:</Label>
+                  <Label className="text-xs text-slate-600 dark:text-slate-400">
+                    Body:
+                  </Label>
                   <div className="whitespace-pre-wrap text-sm">
-                    Hi there,
-
-                    I'd like to schedule a meeting with you. Here are three available time options:
-
-                    {suggestedSlots.map((slot, index) => (
-                      `Option ${index + 1}: ${slot.formatted}\n`
-                    )).join('')}
-                    
+                    Hi there, I'd like to schedule a meeting with you. Here are
+                    three available time options:
+                    {suggestedSlots
+                      .map(
+                        (slot, index) =>
+                          `Option ${index + 1}: ${slot.formatted}\n`,
+                      )
+                      .join("")}
                     Please reply with 1, 2, or 3 to book automatically.
-                    
                     {meetingNotes && `\nMeeting details:\n${meetingNotes}`}
-
-                    Best regards,
-                    Iyashi
+                    Best regards, Iyashi
                   </div>
                 </div>
               </div>
@@ -354,8 +385,8 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
                 <Button variant="outline" onClick={handleClose}>
                   Cancel
                 </Button>
-                <Button 
-                  onClick={handleSendProposal} 
+                <Button
+                  onClick={handleSendProposal}
                   disabled={isLoading}
                   className="bg-blue-600 hover:bg-blue-700"
                 >

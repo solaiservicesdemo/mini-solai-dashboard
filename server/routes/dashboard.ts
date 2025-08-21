@@ -3,66 +3,66 @@ import { RequestHandler } from "express";
 // Mock data for demonstration
 const mockEmailTemplates = [
   {
-    key: 'intro',
-    subject: 'Quick intro, {recipientFirst}',
-    body: 'Hi {recipientFirst},\n\nI\'m {senderFirst} from {business}. We specialize in helping businesses like yours with automation solutions.\n\nWould you be interested in a brief call to discuss how we could help streamline your workflows?\n\nBest regards,\n{senderFirst}'
+    key: "intro",
+    subject: "Quick intro, {recipientFirst}",
+    body: "Hi {recipientFirst},\n\nI'm {senderFirst} from {business}. We specialize in helping businesses like yours with automation solutions.\n\nWould you be interested in a brief call to discuss how we could help streamline your workflows?\n\nBest regards,\n{senderFirst}",
   },
   {
-    key: 'reminder1',
-    subject: 'Following up on {topic}',
-    body: 'Hello {recipientFirst},\n\nJust checking on {topic}. If you have any questions or need clarification on anything, please let me know.\n\nThanks!\n{senderFirst}'
+    key: "reminder1",
+    subject: "Following up on {topic}",
+    body: "Hello {recipientFirst},\n\nJust checking on {topic}. If you have any questions or need clarification on anything, please let me know.\n\nThanks!\n{senderFirst}",
   },
   {
-    key: 'thanks',
-    subject: 'Thank you!',
-    body: 'Thanks {recipientFirst}���really appreciate your time on {topic}. Looking forward to our next steps!\n\nBest,\n{senderFirst}'
-  }
+    key: "thanks",
+    subject: "Thank you!",
+    body: "Thanks {recipientFirst}���really appreciate your time on {topic}. Looking forward to our next steps!\n\nBest,\n{senderFirst}",
+  },
 ];
 
 const mockCalendarEvents = [
   {
-    id: 'abc123',
-    start: '2025-01-21T10:30:00-04:00',
-    end: '2025-01-21T11:00:00-04:00',
-    summary: 'Discovery call – Priya',
-    attendees: ['priya@example.com'],
-    hangoutLink: 'https://meet.google.com/xyz',
-    location: 'Google Meet'
+    id: "abc123",
+    start: "2025-01-21T10:30:00-04:00",
+    end: "2025-01-21T11:00:00-04:00",
+    summary: "Discovery call – Priya",
+    attendees: ["priya@example.com"],
+    hangoutLink: "https://meet.google.com/xyz",
+    location: "Google Meet",
   },
   {
-    id: 'def456',
-    start: '2025-01-21T14:00:00-04:00',
-    end: '2025-01-21T14:30:00-04:00',
-    summary: 'Team standup',
-    attendees: ['team@solai.com'],
-    hangoutLink: 'https://meet.google.com/abc'
+    id: "def456",
+    start: "2025-01-21T14:00:00-04:00",
+    end: "2025-01-21T14:30:00-04:00",
+    summary: "Team standup",
+    attendees: ["team@solai.com"],
+    hangoutLink: "https://meet.google.com/abc",
   },
   {
-    id: 'ghi789',
-    start: '2025-01-21T16:00:00-04:00',
-    end: '2025-01-21T17:00:00-04:00',
-    summary: 'Client presentation',
-    attendees: ['client@acme.com', 'john@acme.com']
-  }
+    id: "ghi789",
+    start: "2025-01-21T16:00:00-04:00",
+    end: "2025-01-21T17:00:00-04:00",
+    summary: "Client presentation",
+    attendees: ["client@acme.com", "john@acme.com"],
+  },
 ];
 
 // Send Template Email webhook endpoint
 export const handleSendTemplate: RequestHandler = async (req, res) => {
   try {
     const { templateKey, to, vars, useAIPolish } = req.body;
-    
+
     // Find the template
-    const template = mockEmailTemplates.find(t => t.key === templateKey);
+    const template = mockEmailTemplates.find((t) => t.key === templateKey);
     if (!template) {
-      return res.status(400).json({ error: 'Template not found' });
+      return res.status(400).json({ error: "Template not found" });
     }
 
     // Replace variables in template
     let subject = template.subject;
     let body = template.body;
-    
+
     Object.entries(vars).forEach(([variable, value]) => {
-      const regex = new RegExp(`{${variable}}`, 'g');
+      const regex = new RegExp(`{${variable}}`, "g");
       subject = subject.replace(regex, value as string);
       body = body.replace(regex, value as string);
     });
@@ -70,24 +70,24 @@ export const handleSendTemplate: RequestHandler = async (req, res) => {
     // Simulate AI polishing if requested
     if (useAIPolish) {
       // In real implementation, this would call an LLM API
-      console.log('AI polishing requested for email');
+      console.log("AI polishing requested for email");
     }
 
     // Simulate sending email (in real implementation, this would integrate with Gmail API)
-    console.log('Sending email:', { to, subject, body });
-    
-    // Simulate delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log("Sending email:", { to, subject, body });
 
-    res.json({ 
-      success: true, 
+    // Simulate delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    res.json({
+      success: true,
       messageId: `msg_${Date.now()}`,
       subject,
-      body 
+      body,
     });
   } catch (error) {
-    console.error('Error sending template email:', error);
-    res.status(500).json({ error: 'Failed to send email' });
+    console.error("Error sending template email:", error);
+    res.status(500).json({ error: "Failed to send email" });
   }
 };
 
@@ -95,25 +95,27 @@ export const handleSendTemplate: RequestHandler = async (req, res) => {
 export const handleGetEventsToday: RequestHandler = async (req, res) => {
   try {
     const { rangeHours = 72 } = req.query;
-    
+
     // In real implementation, this would call Google Calendar API
-    const events = mockCalendarEvents.map(event => ({
+    const events = mockCalendarEvents.map((event) => ({
       ...event,
       // Add some computed fields
       timeUntilStart: new Date(event.start).getTime() - Date.now(),
-      formattedTime: new Date(event.start).toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      })
+      formattedTime: new Date(event.start).toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      }),
     }));
 
-    res.json({ 
-      events: events.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
+    res.json({
+      events: events.sort(
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
+      ),
     });
   } catch (error) {
-    console.error('Error fetching events:', error);
-    res.status(500).json({ error: 'Failed to fetch events' });
+    console.error("Error fetching events:", error);
+    res.status(500).json({ error: "Failed to fetch events" });
   }
 };
 
@@ -121,27 +123,27 @@ export const handleGetEventsToday: RequestHandler = async (req, res) => {
 export const handleProposeTimes: RequestHandler = async (req, res) => {
   try {
     const { to, durationMins, title, notes, timeRange } = req.body;
-    
+
     // Mock time slot generation (in real implementation, this would check calendar availability)
     const suggestedSlots = [
       {
-        id: '1',
-        start: '2025-01-21T10:30:00-05:00',
-        end: '2025-01-21T11:00:00-05:00',
-        formatted: 'Wed Jan 21, 10:30–11:00 AM ET'
+        id: "1",
+        start: "2025-01-21T10:30:00-05:00",
+        end: "2025-01-21T11:00:00-05:00",
+        formatted: "Wed Jan 21, 10:30–11:00 AM ET",
       },
       {
-        id: '2',
-        start: '2025-01-21T14:00:00-05:00',
-        end: '2025-01-21T14:30:00-05:00',
-        formatted: 'Wed Jan 21, 2:00–2:30 PM ET'
+        id: "2",
+        start: "2025-01-21T14:00:00-05:00",
+        end: "2025-01-21T14:30:00-05:00",
+        formatted: "Wed Jan 21, 2:00–2:30 PM ET",
       },
       {
-        id: '3',
-        start: '2025-01-22T09:45:00-05:00',
-        end: '2025-01-22T10:15:00-05:00',
-        formatted: 'Thu Jan 22, 9:45–10:15 AM ET'
-      }
+        id: "3",
+        start: "2025-01-22T09:45:00-05:00",
+        end: "2025-01-22T10:15:00-05:00",
+        formatted: "Thu Jan 22, 9:45–10:15 AM ET",
+      },
     ];
 
     // Simulate email composition and sending
@@ -156,25 +158,25 @@ Option 3: ${suggestedSlots[2].formatted}
 
 Please reply with 1, 2, or 3 to book automatically.
 
-${notes ? `\nMeeting details:\n${notes}` : ''}
+${notes ? `\nMeeting details:\n${notes}` : ""}
 
 Best regards,
 Iyashi`;
 
     // Simulate delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    console.log('Sending meeting proposal:', { to, emailSubject, emailBody });
+    console.log("Sending meeting proposal:", { to, emailSubject, emailBody });
 
-    res.json({ 
+    res.json({
       success: true,
       suggestedSlots,
       emailSent: true,
-      messageId: `proposal_${Date.now()}`
+      messageId: `proposal_${Date.now()}`,
     });
   } catch (error) {
-    console.error('Error proposing times:', error);
-    res.status(500).json({ error: 'Failed to propose meeting times' });
+    console.error("Error proposing times:", error);
+    res.status(500).json({ error: "Failed to propose meeting times" });
   }
 };
 
@@ -182,27 +184,27 @@ Iyashi`;
 export const handleScheduleFollowup: RequestHandler = async (req, res) => {
   try {
     const { emailId, days, threadLink, recipientName } = req.body;
-    
+
     // Calculate follow-up date
     const followupDate = new Date();
     followupDate.setDate(followupDate.getDate() + days);
-    
+
     // In real implementation, this would create a Google Calendar event
-    console.log('Scheduling follow-up:', {
+    console.log("Scheduling follow-up:", {
       emailId,
       followupDate: followupDate.toISOString(),
       threadLink,
-      recipientName
+      recipientName,
     });
 
-    res.json({ 
+    res.json({
       success: true,
       followupDate: followupDate.toISOString(),
-      calendarEventId: `followup_${Date.now()}`
+      calendarEventId: `followup_${Date.now()}`,
     });
   } catch (error) {
-    console.error('Error scheduling follow-up:', error);
-    res.status(500).json({ error: 'Failed to schedule follow-up' });
+    console.error("Error scheduling follow-up:", error);
+    res.status(500).json({ error: "Failed to schedule follow-up" });
   }
 };
 
@@ -211,22 +213,22 @@ export const handleRunInvoiceReminders: RequestHandler = async (req, res) => {
   try {
     // Mock invoice reminder processing
     const remindersProcessed = [
-      { invoice: 'INV-1023', client: 'Acme Corp', action: 'overdue_1' },
-      { invoice: 'INV-1024', client: 'Delta Inc', action: 'due_soon' }
+      { invoice: "INV-1023", client: "Acme Corp", action: "overdue_1" },
+      { invoice: "INV-1024", client: "Delta Inc", action: "due_soon" },
     ];
 
     // Simulate processing delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    console.log('Invoice reminders processed:', remindersProcessed);
+    console.log("Invoice reminders processed:", remindersProcessed);
 
-    res.json({ 
+    res.json({
       success: true,
       remindersProcessed,
-      totalProcessed: remindersProcessed.length
+      totalProcessed: remindersProcessed.length,
     });
   } catch (error) {
-    console.error('Error running invoice reminders:', error);
-    res.status(500).json({ error: 'Failed to run invoice reminders' });
+    console.error("Error running invoice reminders:", error);
+    res.status(500).json({ error: "Failed to run invoice reminders" });
   }
 };

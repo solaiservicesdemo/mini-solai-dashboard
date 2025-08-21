@@ -1,12 +1,23 @@
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { X, Send, Sparkles } from 'lucide-react';
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { X, Send, Sparkles } from "lucide-react";
 
 interface QuickComposeModalProps {
   open: boolean;
@@ -23,66 +34,70 @@ interface EmailTemplate {
 
 const emailTemplates: EmailTemplate[] = [
   {
-    key: 'intro',
-    name: 'Introduction',
-    subject: 'Quick intro, {recipientFirst}',
-    body: 'Hi {recipientFirst},\n\nI\'m {senderFirst} from {business}. We specialize in helping businesses like yours with automation solutions.\n\nWould you be interested in a brief call to discuss how we could help streamline your workflows?\n\nBest regards,\n{senderFirst}',
-    variables: ['recipientFirst', 'senderFirst', 'business']
+    key: "intro",
+    name: "Introduction",
+    subject: "Quick intro, {recipientFirst}",
+    body: "Hi {recipientFirst},\n\nI'm {senderFirst} from {business}. We specialize in helping businesses like yours with automation solutions.\n\nWould you be interested in a brief call to discuss how we could help streamline your workflows?\n\nBest regards,\n{senderFirst}",
+    variables: ["recipientFirst", "senderFirst", "business"],
   },
   {
-    key: 'reminder1',
-    name: 'Payment Reminder',
-    subject: 'Following up on {topic}',
-    body: 'Hello {recipientFirst},\n\nJust checking on {topic}. If you have any questions or need clarification on anything, please let me know.\n\nThanks!\n{senderFirst}',
-    variables: ['recipientFirst', 'senderFirst', 'topic']
+    key: "reminder1",
+    name: "Payment Reminder",
+    subject: "Following up on {topic}",
+    body: "Hello {recipientFirst},\n\nJust checking on {topic}. If you have any questions or need clarification on anything, please let me know.\n\nThanks!\n{senderFirst}",
+    variables: ["recipientFirst", "senderFirst", "topic"],
   },
   {
-    key: 'thanks',
-    name: 'Thank You',
-    subject: 'Thank you!',
-    body: 'Thanks {recipientFirst}—really appreciate your time on {topic}. Looking forward to our next steps!\n\nBest,\n{senderFirst}',
-    variables: ['recipientFirst', 'senderFirst', 'topic']
+    key: "thanks",
+    name: "Thank You",
+    subject: "Thank you!",
+    body: "Thanks {recipientFirst}—really appreciate your time on {topic}. Looking forward to our next steps!\n\nBest,\n{senderFirst}",
+    variables: ["recipientFirst", "senderFirst", "topic"],
   },
   {
-    key: 'followup',
-    name: 'Follow Up',
-    subject: 'Following up on our conversation',
-    body: 'Hi {recipientFirst},\n\nI wanted to follow up on our conversation about {topic}. Do you have any updates or questions I can help with?\n\nLet me know if you\'d like to schedule a quick call.\n\nBest regards,\n{senderFirst}',
-    variables: ['recipientFirst', 'senderFirst', 'topic']
-  }
+    key: "followup",
+    name: "Follow Up",
+    subject: "Following up on our conversation",
+    body: "Hi {recipientFirst},\n\nI wanted to follow up on our conversation about {topic}. Do you have any updates or questions I can help with?\n\nLet me know if you'd like to schedule a quick call.\n\nBest regards,\n{senderFirst}",
+    variables: ["recipientFirst", "senderFirst", "topic"],
+  },
 ];
 
-export function QuickComposeModal({ open, onOpenChange }: QuickComposeModalProps) {
-  const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
-  const [to, setTo] = useState('');
+export function QuickComposeModal({
+  open,
+  onOpenChange,
+}: QuickComposeModalProps) {
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<EmailTemplate | null>(null);
+  const [to, setTo] = useState("");
   const [variables, setVariables] = useState<Record<string, string>>({});
   const [useAIPolish, setUseAIPolish] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleTemplateSelect = (templateKey: string) => {
-    const template = emailTemplates.find(t => t.key === templateKey);
+    const template = emailTemplates.find((t) => t.key === templateKey);
     if (template) {
       setSelectedTemplate(template);
       // Initialize variables with default values
       const newVariables: Record<string, string> = {};
-      template.variables.forEach(variable => {
-        newVariables[variable] = variables[variable] || '';
+      template.variables.forEach((variable) => {
+        newVariables[variable] = variables[variable] || "";
       });
       setVariables(newVariables);
     }
   };
 
   const handleVariableChange = (variable: string, value: string) => {
-    setVariables(prev => ({
+    setVariables((prev) => ({
       ...prev,
-      [variable]: value
+      [variable]: value,
     }));
   };
 
   const replaceVariables = (text: string): string => {
     let result = text;
     Object.entries(variables).forEach(([variable, value]) => {
-      result = result.replace(new RegExp(`{${variable}}`, 'g'), value);
+      result = result.replace(new RegExp(`{${variable}}`, "g"), value);
     });
     return result;
   };
@@ -91,32 +106,32 @@ export function QuickComposeModal({ open, onOpenChange }: QuickComposeModalProps
     if (!selectedTemplate || !to) return;
 
     setIsLoading(true);
-    
+
     const emailData = {
       templateKey: selectedTemplate.key,
       to,
       vars: variables,
-      useAIPolish
+      useAIPolish,
     };
 
     try {
       // This would typically call your n8n webhook
-      const response = await fetch('/api/send-template', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(emailData)
+      const response = await fetch("/api/send-template", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(emailData),
       });
 
       if (response.ok) {
         // Reset form and close modal
         setSelectedTemplate(null);
-        setTo('');
+        setTo("");
         setVariables({});
         setUseAIPolish(false);
         onOpenChange(false);
       }
     } catch (error) {
-      console.error('Failed to send email:', error);
+      console.error("Failed to send email:", error);
     } finally {
       setIsLoading(false);
     }
@@ -124,7 +139,7 @@ export function QuickComposeModal({ open, onOpenChange }: QuickComposeModalProps
 
   const handleClose = () => {
     setSelectedTemplate(null);
-    setTo('');
+    setTo("");
     setVariables({});
     setUseAIPolish(false);
     onOpenChange(false);
@@ -156,7 +171,7 @@ export function QuickComposeModal({ open, onOpenChange }: QuickComposeModalProps
                 <SelectValue placeholder="Choose a template..." />
               </SelectTrigger>
               <SelectContent>
-                {emailTemplates.map(template => (
+                {emailTemplates.map((template) => (
                   <SelectItem key={template.key} value={template.key}>
                     {template.name}
                   </SelectItem>
@@ -182,7 +197,7 @@ export function QuickComposeModal({ open, onOpenChange }: QuickComposeModalProps
             <div className="space-y-3">
               <Label>Template Variables</Label>
               <div className="grid grid-cols-2 gap-3">
-                {selectedTemplate.variables.map(variable => (
+                {selectedTemplate.variables.map((variable) => (
                   <div key={variable} className="space-y-1">
                     <Label htmlFor={variable} className="text-sm font-medium">
                       {variable}
@@ -190,8 +205,10 @@ export function QuickComposeModal({ open, onOpenChange }: QuickComposeModalProps
                     <Input
                       id={variable}
                       placeholder={`Enter ${variable}...`}
-                      value={variables[variable] || ''}
-                      onChange={(e) => handleVariableChange(variable, e.target.value)}
+                      value={variables[variable] || ""}
+                      onChange={(e) =>
+                        handleVariableChange(variable, e.target.value)
+                      }
                     />
                   </div>
                 ))}
@@ -205,12 +222,20 @@ export function QuickComposeModal({ open, onOpenChange }: QuickComposeModalProps
               <Label>Preview</Label>
               <div className="border rounded-lg p-4 bg-slate-50 dark:bg-slate-800 space-y-3">
                 <div>
-                  <Label className="text-xs text-slate-600 dark:text-slate-400">Subject:</Label>
-                  <div className="font-medium">{replaceVariables(selectedTemplate.subject)}</div>
+                  <Label className="text-xs text-slate-600 dark:text-slate-400">
+                    Subject:
+                  </Label>
+                  <div className="font-medium">
+                    {replaceVariables(selectedTemplate.subject)}
+                  </div>
                 </div>
                 <div>
-                  <Label className="text-xs text-slate-600 dark:text-slate-400">Body:</Label>
-                  <div className="whitespace-pre-wrap text-sm">{replaceVariables(selectedTemplate.body)}</div>
+                  <Label className="text-xs text-slate-600 dark:text-slate-400">
+                    Body:
+                  </Label>
+                  <div className="whitespace-pre-wrap text-sm">
+                    {replaceVariables(selectedTemplate.body)}
+                  </div>
                 </div>
               </div>
             </div>
@@ -236,8 +261,8 @@ export function QuickComposeModal({ open, onOpenChange }: QuickComposeModalProps
             <Button variant="outline" onClick={handleClose}>
               Cancel
             </Button>
-            <Button 
-              onClick={handleSend} 
+            <Button
+              onClick={handleSend}
               disabled={!selectedTemplate || !to || isLoading}
               className="bg-blue-600 hover:bg-blue-700"
             >

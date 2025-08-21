@@ -67,10 +67,10 @@ export default {
         info: "hsl(var(--info))",
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
       },
       backdropBlur: {
-        xs: '2px',
+        xs: "2px",
       },
       borderRadius: {
         lg: "var(--radius)",
