@@ -136,6 +136,15 @@ const mockEmails: EmailThread[] = [
 export default function Dashboard() {
   const [isQuickComposeOpen, setIsQuickComposeOpen] = useState(false);
   const [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
+    {
+      id: '1',
+      text: 'Hello! I\'m your AI assistant. How can I help you manage your business today?',
+      isUser: false,
+      timestamp: new Date()
+    }
+  ]);
+  const [chatInput, setChatInput] = useState('');
 
   const handleEmailAttendees = (eventId: string) => {
     console.log("Email attendees for event:", eventId);
