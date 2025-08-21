@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +27,8 @@ import {
   ChevronRight,
   Bell,
   ExternalLink,
+  Send,
+  MessageSquare,
 } from "lucide-react";
 import { QuickComposeModal } from "@/components/QuickComposeModal";
 import { CalendarSchedulerModal } from "@/components/CalendarSchedulerModal";
