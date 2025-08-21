@@ -361,153 +361,66 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          {/* Notifications Sidebar - Mobile: Full width, Desktop: Right sidebar */}
+          {/* Chat Sidebar - Mobile: Full width, Desktop: Right sidebar */}
           <div className="lg:col-span-3 order-2 lg:order-3">
-            <Card className="h-full">
+            <Card className="h-full flex flex-col">
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Notifications</CardTitle>
+                <CardTitle className="flex items-center text-lg">
+                  <MessageSquare className="mr-2 h-5 w-5" />
+                  AI Assistant
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 overflow-y-auto">
-                {/* This Week Section */}
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <h4 className="font-medium text-sm">This Week</h4>
-                    <Badge variant="secondary" className="text-xs">
-                      {
-                        mockEvents.filter((event) => {
-                          const eventDate = new Date(event.start || Date.now());
-                          const today = new Date();
-                          const weekEnd = new Date(today);
-                          weekEnd.setDate(today.getDate() + 7);
-                          return eventDate <= weekEnd;
-                        }).length
-                      }
-                    </Badge>
-                  </div>
-                  {mockEvents
-                    .filter((event) => {
-                      const eventDate = new Date(event.start || Date.now());
-                      const today = new Date();
-                      const weekEnd = new Date(today);
-                      weekEnd.setDate(today.getDate() + 7);
-                      return eventDate <= weekEnd;
-                    })
-                    .map((event) => (
+              <CardContent className="flex-1 flex flex-col min-h-0">
+                {/* Chat Messages */}
+                <ScrollArea className="flex-1 mb-4">
+                  <div className="space-y-3">
+                    {chatMessages.map((message) => (
                       <div
-                        key={event.id}
-                        className="p-3 border rounded-lg space-y-2 bg-blue-50/50 dark:bg-blue-900/20"
+                        key={message.id}
+                        className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
                       >
-                        <div className="text-sm font-medium">{event.title}</div>
-                        <div className="text-xs text-slate-600 dark:text-slate-400">
-                          {event.time}
-                        </div>
-                        <div className="space-y-1">
-                          {event.meetLink && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="w-full text-xs"
-                            >
-                              <Video className="mr-1 h-3 w-3" />
-                              Join
-                            </Button>
-                          )}
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="w-full text-xs"
-                            onClick={() => handleEmailAttendees(event.id)}
-                          >
-                            <Users className="mr-1 h-3 w-3" />
-                            Email Attendees
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="w-full text-xs"
-                            onClick={() => handleSnoozeReminder(event.id)}
-                          >
-                            <Clock className="mr-1 h-3 w-3" />
-                            Snooze 15m
-                          </Button>
+                        <div
+                          className={`max-w-[80%] p-3 rounded-lg ${
+                            message.isUser
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100'
+                          }`}
+                        >
+                          <p className="text-sm">{message.text}</p>
+                          <p className="text-xs opacity-70 mt-1">
+                            {message.timestamp.toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
                         </div>
                       </div>
                     ))}
-                </div>
+                  </div>
+                </ScrollArea>
 
-                {/* Later Section */}
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <h4 className="font-medium text-sm">Later</h4>
-                    <Badge variant="outline" className="text-xs">
-                      {
-                        mockEvents.filter((event) => {
-                          const eventDate = new Date(event.start || Date.now());
-                          const weekEnd = new Date();
-                          weekEnd.setDate(weekEnd.getDate() + 7);
-                          return eventDate > weekEnd;
-                        }).length
+                {/* Chat Input */}
+                <div className="flex space-x-2">
+                  <Input
+                    placeholder="Ask me anything..."
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
                       }
-                    </Badge>
-                  </div>
-                  {mockEvents
-                    .filter((event) => {
-                      const eventDate = new Date(event.start || Date.now());
-                      const weekEnd = new Date();
-                      weekEnd.setDate(weekEnd.getDate() + 7);
-                      return eventDate > weekEnd;
-                    })
-                    .map((event) => (
-                      <div
-                        key={event.id}
-                        className="p-3 border rounded-lg space-y-2"
-                      >
-                        <div className="text-sm font-medium">{event.title}</div>
-                        <div className="text-xs text-slate-600 dark:text-slate-400">
-                          {event.time}
-                        </div>
-                        <div className="space-y-1">
-                          {event.meetLink && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="w-full text-xs"
-                            >
-                              <Video className="mr-1 h-3 w-3" />
-                              Join
-                            </Button>
-                          )}
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="w-full text-xs"
-                            onClick={() => handleEmailAttendees(event.id)}
-                          >
-                            <Users className="mr-1 h-3 w-3" />
-                            Email Attendees
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="w-full text-xs"
-                            onClick={() => handleSnoozeReminder(event.id)}
-                          >
-                            <Clock className="mr-1 h-3 w-3" />
-                            Snooze 15m
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  {mockEvents.filter((event) => {
-                    const eventDate = new Date(event.start || Date.now());
-                    const weekEnd = new Date();
-                    weekEnd.setDate(weekEnd.getDate() + 7);
-                    return eventDate > weekEnd;
-                  }).length === 0 && (
-                    <p className="text-xs text-slate-500 italic">
-                      No events scheduled
-                    </p>
-                  )}
+                    }}
+                    className="flex-1"
+                  />
+                  <Button
+                    size="sm"
+                    onClick={handleSendMessage}
+                    disabled={!chatInput.trim()}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
                 </div>
               </CardContent>
             </Card>
