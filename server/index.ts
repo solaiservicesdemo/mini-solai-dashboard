@@ -8,6 +8,7 @@ import {
   handleProposeTimes,
   handleScheduleFollowup,
   handleRunInvoiceReminders,
+  handleSyncCalendarEvents,
 } from "./routes/dashboard";
 
 export function createServer() {
