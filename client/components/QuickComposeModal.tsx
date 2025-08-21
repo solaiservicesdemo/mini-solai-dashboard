@@ -196,7 +196,7 @@ export function QuickComposeModal({
           {selectedTemplate && selectedTemplate.variables.length > 0 && (
             <div className="space-y-3">
               <Label>Template Variables</Label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {selectedTemplate.variables.map((variable) => (
                   <div key={variable} className="space-y-1">
                     <Label htmlFor={variable} className="text-sm font-medium">
