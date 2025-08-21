@@ -53,6 +53,13 @@ interface EmailThread {
   avatar?: string;
 }
 
+interface ChatMessage {
+  id: string;
+  text: string;
+  isUser: boolean;
+  timestamp: Date;
+}
+
 const mockEvents: CalendarEvent[] = [
   {
     id: "1",
