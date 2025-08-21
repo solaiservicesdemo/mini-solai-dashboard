@@ -122,23 +122,24 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur-sm dark:bg-slate-900/80 sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
                 <span className="text-white font-bold text-sm">S</span>
               </div>
-              <h1 className="text-xl font-semibold text-slate-900 dark:text-white">
-                SolAI Dashboard
+              <h1 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white">
+                <span className="hidden sm:inline">SolAI Dashboard</span>
+                <span className="sm:hidden">SolAI</span>
               </h1>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <Button variant="ghost" size="sm">
                 <Bell className="h-4 w-4" />
               </Button>
-              <Avatar className="h-8 w-8">
+              <Avatar className="h-7 w-7 sm:h-8 sm:w-8">
                 <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>IY</AvatarFallback>
+                <AvatarFallback className="text-xs">IY</AvatarFallback>
               </Avatar>
             </div>
           </div>
