@@ -111,20 +111,28 @@ export const handleGetEventsToday: RequestHandler = async (req, res) => {
     }));
 
     // Separate events into "This Week" and "Later"
-    const thisWeekEvents = events.filter(event => {
-      const eventDate = new Date(event.start);
-      return eventDate <= weekEnd;
-    }).sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+    const thisWeekEvents = events
+      .filter((event) => {
+        const eventDate = new Date(event.start);
+        return eventDate <= weekEnd;
+      })
+      .sort(
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
+      );
 
-    const laterEvents = events.filter(event => {
-      const eventDate = new Date(event.start);
-      return eventDate > weekEnd;
-    }).sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+    const laterEvents = events
+      .filter((event) => {
+        const eventDate = new Date(event.start);
+        return eventDate > weekEnd;
+      })
+      .sort(
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
+      );
 
     res.json({
       thisWeek: thisWeekEvents,
       later: laterEvents,
-      total: events.length
+      total: events.length,
     });
   } catch (error) {
     console.error("Error fetching events:", error);
@@ -249,15 +257,15 @@ export const handleRunInvoiceReminders: RequestHandler = async (req, res) => {
 // Webhook endpoint for n8n to sync calendar events to Google Sheets
 export const handleSyncCalendarEvents: RequestHandler = async (req, res) => {
   try {
-    const { events, sheetId, sheetName = 'CalendarEvents' } = req.body;
+    const { events, sheetId, sheetName = "CalendarEvents" } = req.body;
 
     // This endpoint will be called by your n8n workflow
     // to sync calendar events to Google Sheets
 
-    console.log('Syncing calendar events to Google Sheets:', {
+    console.log("Syncing calendar events to Google Sheets:", {
       eventsCount: events?.length || 0,
       sheetId,
-      sheetName
+      sheetName,
     });
 
     // In your n8n workflow, you'll:
@@ -286,13 +294,13 @@ export const handleSyncCalendarEvents: RequestHandler = async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Calendar events synced successfully',
+      message: "Calendar events synced successfully",
       eventsProcessed: events?.length || 0,
       sheetId,
-      sheetName
+      sheetName,
     });
   } catch (error) {
-    console.error('Error syncing calendar events:', error);
-    res.status(500).json({ error: 'Failed to sync calendar events' });
+    console.error("Error syncing calendar events:", error);
+    res.status(500).json({ error: "Failed to sync calendar events" });
   }
 };

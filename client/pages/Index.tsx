@@ -327,17 +327,19 @@ export default function Dashboard() {
                   <div className="flex items-center space-x-2">
                     <h4 className="font-medium text-sm">This Week</h4>
                     <Badge variant="secondary" className="text-xs">
-                      {mockEvents.filter(event => {
-                        const eventDate = new Date(event.start || Date.now());
-                        const today = new Date();
-                        const weekEnd = new Date(today);
-                        weekEnd.setDate(today.getDate() + 7);
-                        return eventDate <= weekEnd;
-                      }).length}
+                      {
+                        mockEvents.filter((event) => {
+                          const eventDate = new Date(event.start || Date.now());
+                          const today = new Date();
+                          const weekEnd = new Date(today);
+                          weekEnd.setDate(today.getDate() + 7);
+                          return eventDate <= weekEnd;
+                        }).length
+                      }
                     </Badge>
                   </div>
                   {mockEvents
-                    .filter(event => {
+                    .filter((event) => {
                       const eventDate = new Date(event.start || Date.now());
                       const today = new Date();
                       const weekEnd = new Date(today);
@@ -392,16 +394,18 @@ export default function Dashboard() {
                   <div className="flex items-center space-x-2">
                     <h4 className="font-medium text-sm">Later</h4>
                     <Badge variant="outline" className="text-xs">
-                      {mockEvents.filter(event => {
-                        const eventDate = new Date(event.start || Date.now());
-                        const weekEnd = new Date();
-                        weekEnd.setDate(weekEnd.getDate() + 7);
-                        return eventDate > weekEnd;
-                      }).length}
+                      {
+                        mockEvents.filter((event) => {
+                          const eventDate = new Date(event.start || Date.now());
+                          const weekEnd = new Date();
+                          weekEnd.setDate(weekEnd.getDate() + 7);
+                          return eventDate > weekEnd;
+                        }).length
+                      }
                     </Badge>
                   </div>
                   {mockEvents
-                    .filter(event => {
+                    .filter((event) => {
                       const eventDate = new Date(event.start || Date.now());
                       const weekEnd = new Date();
                       weekEnd.setDate(weekEnd.getDate() + 7);
@@ -448,13 +452,15 @@ export default function Dashboard() {
                         </div>
                       </div>
                     ))}
-                  {mockEvents.filter(event => {
+                  {mockEvents.filter((event) => {
                     const eventDate = new Date(event.start || Date.now());
                     const weekEnd = new Date();
                     weekEnd.setDate(weekEnd.getDate() + 7);
                     return eventDate > weekEnd;
                   }).length === 0 && (
-                    <p className="text-xs text-slate-500 italic">No events scheduled</p>
+                    <p className="text-xs text-slate-500 italic">
+                      No events scheduled
+                    </p>
                   )}
                 </div>
               </CardContent>
