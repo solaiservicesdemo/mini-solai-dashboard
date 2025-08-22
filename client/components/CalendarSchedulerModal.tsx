@@ -94,7 +94,7 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
   };
 
   const generateTimeSlots = () => {
-    if (selectedDates.length === 0) return;
+    if (!selectedDates || selectedDates.length === 0) return;
 
     const workingHours = [
       '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
