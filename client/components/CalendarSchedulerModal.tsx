@@ -189,7 +189,7 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
     setDuration('30');
     setMeetingTitle('');
     setMeetingNotes('');
-    setSelectedDates([]);
+    setSelectedDates(undefined);
     setTimeSlots([]);
     setStep('compose');
     setEditingSlot(null);
