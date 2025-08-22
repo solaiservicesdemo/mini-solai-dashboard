@@ -212,7 +212,7 @@
   }
 
   .rdp-day_selected::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     border: 2px solid hsl(var(--primary));

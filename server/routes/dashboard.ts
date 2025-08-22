@@ -151,16 +151,16 @@ export const handleProposeTimes: RequestHandler = async (req, res) => {
     // Format time slots for email
     const formattedSlots = timeSlots.map((slot: any, index: number) => {
       const date = new Date(slot.date);
-      const dateStr = date.toLocaleDateString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
+      const dateStr = date.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
       });
       return {
         ...slot,
         formatted: `${dateStr}, ${slot.start}–${slot.end}`,
-        option: index + 1
+        option: index + 1,
       };
     });
 
@@ -170,9 +170,9 @@ export const handleProposeTimes: RequestHandler = async (req, res) => {
 
 I'd like to schedule a meeting with you. Here are the available time options:
 
-${formattedSlots.map(slot => `Option ${slot.option}: ${slot.formatted}`).join('\n')}
+${formattedSlots.map((slot) => `Option ${slot.option}: ${slot.formatted}`).join("\n")}
 
-Please reply with ${formattedSlots.map((_, i) => i + 1).join(', ')} to book automatically.
+Please reply with ${formattedSlots.map((_, i) => i + 1).join(", ")} to book automatically.
 
 ${meetingNotes ? `\nMeeting details:\n${meetingNotes}` : ""}
 
@@ -193,7 +193,7 @@ Iyashi`;
       meetingTitle,
       timeSlots: formattedSlots.length,
       emailSubject,
-      emailBody
+      emailBody,
     });
 
     res.json({
@@ -203,7 +203,7 @@ Iyashi`;
       messageId: `proposal_${Date.now()}`,
       calendarIntegration: "Google Calendar availability checked",
       emailSubject,
-      emailPreview: emailBody.substring(0, 200) + '...'
+      emailPreview: emailBody.substring(0, 200) + "...",
     });
   } catch (error) {
     console.error("Error proposing times:", error);
