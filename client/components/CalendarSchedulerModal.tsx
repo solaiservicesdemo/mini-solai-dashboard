@@ -70,7 +70,7 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
   const [duration, setDuration] = useState('30');
   const [meetingTitle, setMeetingTitle] = useState('');
   const [meetingNotes, setMeetingNotes] = useState('');
-  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const [selectedDates, setSelectedDates] = useState<Date[] | undefined>(undefined);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [maxSlots, setMaxSlots] = useState('3');
   const [isLoading, setIsLoading] = useState(false);
