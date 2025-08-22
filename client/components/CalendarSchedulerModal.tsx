@@ -132,7 +132,7 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
   };
 
   const addTimeSlot = () => {
-    if (selectedDates.length === 0) return;
+    if (!selectedDates || selectedDates.length === 0) return;
     
     const newSlot: TimeSlot = {
       id: `new-${Date.now()}`,
