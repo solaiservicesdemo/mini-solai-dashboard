@@ -167,4 +167,33 @@
   .status-badge-info {
     @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
   }
+
+  /* Fix button hover states to keep text visible */
+  .btn-hover-fix {
+    @apply hover:bg-opacity-90 hover:text-current;
+  }
+
+  /* Override button hover states that make text invisible */
+  button:hover {
+    color: inherit !important;
+  }
+
+  button[data-state="open"]:hover,
+  button:hover[data-state="open"] {
+    color: inherit !important;
+  }
+
+  /* Specific fixes for primary buttons */
+  .bg-primary:hover {
+    @apply bg-primary/90 text-primary-foreground;
+  }
+
+  .bg-blue-600:hover {
+    @apply bg-blue-700 text-white;
+  }
+
+  /* Fix outline button hover */
+  .border:hover {
+    @apply bg-slate-100 dark:bg-slate-800 text-current;
+  }
 }
