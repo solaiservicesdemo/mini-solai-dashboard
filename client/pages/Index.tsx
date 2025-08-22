@@ -236,7 +236,7 @@ export default function Dashboard() {
                   onClick={() => setIsSchedulerOpen(true)}
                 >
                   <Calendar className="mr-2 h-4 w-4" />
-                  Propose Times
+                  Schedule Meeting
                 </Button>
 
                 <Button className="w-full justify-start" variant="outline">
