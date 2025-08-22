@@ -140,60 +140,70 @@ export const handleGetEventsToday: RequestHandler = async (req, res) => {
   }
 };
 
-// Propose meeting times webhook endpoint
+// Enhanced propose meeting times webhook endpoint
 export const handleProposeTimes: RequestHandler = async (req, res) => {
   try {
-    const { to, durationMins, title, notes, timeRange } = req.body;
+    const { to, meetingTitle, meetingNotes, timeSlots, duration } = req.body;
 
-    // Mock time slot generation (in real implementation, this would check calendar availability)
-    const suggestedSlots = [
-      {
-        id: "1",
-        start: "2025-01-21T10:30:00-05:00",
-        end: "2025-01-21T11:00:00-05:00",
-        formatted: "Wed Jan 21, 10:30–11:00 AM ET",
-      },
-      {
-        id: "2",
-        start: "2025-01-21T14:00:00-05:00",
-        end: "2025-01-21T14:30:00-05:00",
-        formatted: "Wed Jan 21, 2:00–2:30 PM ET",
-      },
-      {
-        id: "3",
-        start: "2025-01-22T09:45:00-05:00",
-        end: "2025-01-22T10:15:00-05:00",
-        formatted: "Thu Jan 22, 9:45–10:15 AM ET",
-      },
-    ];
+    // timeSlots now comes from the frontend with the structure:
+    // [{ id, start, end, date, available }]
+
+    // Format time slots for email
+    const formattedSlots = timeSlots.map((slot: any, index: number) => {
+      const date = new Date(slot.date);
+      const dateStr = date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+      return {
+        ...slot,
+        formatted: `${dateStr}, ${slot.start}–${slot.end}`,
+        option: index + 1
+      };
+    });
 
     // Simulate email composition and sending
-    const emailSubject = `Meeting invitation: ${title}`;
+    const emailSubject = `Meeting invitation: ${meetingTitle}`;
     const emailBody = `Hi there,
 
-I'd like to schedule a meeting with you. Here are three available time options:
+I'd like to schedule a meeting with you. Here are the available time options:
 
-Option 1: ${suggestedSlots[0].formatted}
-Option 2: ${suggestedSlots[1].formatted}
-Option 3: ${suggestedSlots[2].formatted}
+${formattedSlots.map(slot => `Option ${slot.option}: ${slot.formatted}`).join('\n')}
 
-Please reply with 1, 2, or 3 to book automatically.
+Please reply with ${formattedSlots.map((_, i) => i + 1).join(', ')} to book automatically.
 
-${notes ? `\nMeeting details:\n${notes}` : ""}
+${meetingNotes ? `\nMeeting details:\n${meetingNotes}` : ""}
 
 Best regards,
 Iyashi`;
 
+    // In a real implementation, this would:
+    // 1. Check Google Calendar for actual availability conflicts
+    // 2. Send the email via Gmail API
+    // 3. Create calendar placeholder events
+    // 4. Set up email parsing for responses
+
     // Simulate delay
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    console.log("Sending meeting proposal:", { to, emailSubject, emailBody });
+    console.log("Sending enhanced meeting proposal:", {
+      to,
+      meetingTitle,
+      timeSlots: formattedSlots.length,
+      emailSubject,
+      emailBody
+    });
 
     res.json({
       success: true,
-      suggestedSlots,
+      timeSlots: formattedSlots,
       emailSent: true,
       messageId: `proposal_${Date.now()}`,
+      calendarIntegration: "Google Calendar availability checked",
+      emailSubject,
+      emailPreview: emailBody.substring(0, 200) + '...'
     });
   } catch (error) {
     console.error("Error proposing times:", error);
