@@ -310,9 +310,26 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
                   <Calendar
                     mode="multiple"
                     selected={selectedDates}
-                    onSelect={(dates) => setSelectedDates(dates || [])}
-                    disabled={(date) => date < new Date()}
-                    className="rounded-md border"
+                    onSelect={(dates) => {
+                      console.log('Calendar dates selected:', dates);
+                      setSelectedDates(dates || []);
+                    }}
+                    disabled={(date) => {
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      return date < today;
+                    }}
+                    className="rounded-md border w-full"
+                    modifiers={{
+                      selected: selectedDates
+                    }}
+                    modifiersStyles={{
+                      selected: {
+                        backgroundColor: 'hsl(var(--primary))',
+                        color: 'hsl(var(--primary-foreground))',
+                        borderRadius: '50%'
+                      }
+                    }}
                   />
                   
                   {selectedDates.length > 0 && (
