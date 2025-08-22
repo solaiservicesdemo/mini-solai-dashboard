@@ -517,9 +517,9 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
             </Button>
             
             {step === 'compose' && (
-              <Button 
-                onClick={generateTimeSlots} 
-                disabled={!to || !meetingTitle || selectedDates.length === 0 || isLoading}
+              <Button
+                onClick={generateTimeSlots}
+                disabled={!to || !meetingTitle || !selectedDates || selectedDates.length === 0 || isLoading}
                 className="bg-blue-600 hover:bg-blue-700"
               >
                 {isLoading ? (
