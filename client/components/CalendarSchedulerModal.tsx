@@ -196,8 +196,8 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
     onOpenChange(false);
   };
 
-  const formatDateRange = (dates: Date[]) => {
-    if (dates.length === 0) return 'No dates selected';
+  const formatDateRange = (dates: Date[] | undefined) => {
+    if (!dates || dates.length === 0) return 'No dates selected';
     if (dates.length === 1) return format(dates[0], 'MMM dd, yyyy');
     return `${format(dates[0], 'MMM dd')} - ${format(dates[dates.length - 1], 'MMM dd, yyyy')}`;
   };
