@@ -332,7 +332,7 @@ export function CalendarSchedulerModal({ open, onOpenChange }: CalendarScheduler
                     }}
                   />
                   
-                  {selectedDates.length > 0 && (
+                  {selectedDates && selectedDates.length > 0 && (
                     <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                       <div className="text-sm font-medium text-blue-900 dark:text-blue-100">
                         Selected Dates: {formatDateRange(selectedDates)}
