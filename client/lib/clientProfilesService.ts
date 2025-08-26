@@ -8,9 +8,9 @@ export interface ClientOption {
 }
 
 /**
- * Fetch top client profiles from Supabase (limited for performance)
+ * Fetch client profiles from Supabase (increased limit for better UX)
  */
-export async function fetchClientProfiles(limit: number = 50): Promise<ClientOption[]> {
+export async function fetchClientProfiles(limit: number = 200): Promise<ClientOption[]> {
   try {
     const { data, error } = await supabase
       .from('client_profiles')
