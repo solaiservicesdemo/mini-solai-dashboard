@@ -69,7 +69,7 @@ export function ClientDropdown({
     setLoading(true)
     setError(null)
     try {
-      const data = await fetchClientProfiles(50) // Limit initial load
+      const data = await fetchClientProfiles(200) // Load more clients for better UX
       setClients(data)
     } catch (err) {
       setError('Failed to load clients')
