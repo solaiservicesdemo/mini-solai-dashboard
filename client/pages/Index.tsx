@@ -222,7 +222,7 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <Button
-                  className="w-full justify-start transition-[color,background-color,border-color,fill,stroke] duration-150"
+                  className="w-full justify-start duration-150"
                   variant="default"
                   onClick={() => setIsQuickComposeOpen(true)}
                 >
