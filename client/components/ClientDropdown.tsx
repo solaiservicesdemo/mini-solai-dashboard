@@ -133,7 +133,7 @@ export function ClientDropdown({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full min-w-[400px] max-h-[400px] p-0" align="start">
+      <PopoverContent className="w-full min-w-[400px] max-h-[400px] p-0 overflow-hidden" align="start">
         <Command>
           <CommandInput 
             placeholder="Search clients or enter email..." 
