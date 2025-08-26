@@ -308,7 +308,11 @@
   }
 
   .client-dropdown-scroll [cmdk-item][data-selected="true"] {
-    background-color: rgb(254, 249, 195) !important; /* Light yellow-brown background */
+    background-color: rgb(
+      254,
+      249,
+      195
+    ) !important; /* Light yellow-brown background */
     color: rgb(132, 95, 82) !important; /* Brown text */
   }
 
@@ -322,6 +326,10 @@
   }
 
   .client-dropdown-scroll [cmdk-item]:hover .font-medium {
-    color: rgb(132, 95, 82) !important; /* Keep brown for client names on hover */
+    color: rgb(
+      132,
+      95,
+      82
+    ) !important; /* Keep brown for client names on hover */
   }
 }
