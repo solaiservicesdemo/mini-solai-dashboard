@@ -93,10 +93,11 @@ export function ClientDropdown({
     }
   }, [])
 
-  const handleSelect = (client: ClientOption) => {
+  const handleSelect = useCallback((client: ClientOption) => {
     onValueChange(client.email, client.name)
     setOpen(false)
-  }
+    setSearchQuery("") // Clear search when selecting
+  }, [onValueChange])
 
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen)
