@@ -278,4 +278,19 @@
   .client-dropdown-scroll::-webkit-scrollbar-corner {
     background: rgb(249, 250, 251);
   }
+
+  /* Fix invisible text on hover in client dropdown */
+  .client-dropdown-scroll [cmdk-item] {
+    color: rgb(15, 23, 42) !important; /* Always dark text */
+  }
+
+  .client-dropdown-scroll [cmdk-item][data-selected="true"] {
+    background-color: rgb(241, 245, 249) !important; /* Light blue background */
+    color: rgb(15, 23, 42) !important; /* Keep dark text */
+  }
+
+  .client-dropdown-scroll [cmdk-item]:hover {
+    background-color: rgb(241, 245, 249) !important;
+    color: rgb(15, 23, 42) !important; /* Ensure text stays visible */
+  }
 }
