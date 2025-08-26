@@ -308,6 +308,7 @@ export function CalendarSchedulerModal({
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
+                          <SelectItem value="1">1 option</SelectItem>
                           <SelectItem value="2">2 options</SelectItem>
                           <SelectItem value="3">3 options</SelectItem>
                           <SelectItem value="4">4 options</SelectItem>
