@@ -173,20 +173,7 @@
     @apply hover:bg-opacity-90 hover:text-current;
   }
 
-  /* Override button hover states that make text invisible */
-  button:hover {
-    color: inherit !important;
-  }
-
-  button[data-state="open"]:hover,
-  button:hover[data-state="open"] {
-    color: inherit !important;
-  }
-
-  /* Specific fixes for button variants */
-  button:hover:not(.bg-primary):not(.bg-blue-600):not(.bg-destructive) {
-    color: inherit !important;
-  }
+  /* Only apply minimal hover fixes to prevent text from disappearing */
 
   /* Primary button hovers should maintain readability */
   .bg-primary:hover {
