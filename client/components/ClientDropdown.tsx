@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { Check, ChevronsUpDown, User, Mail, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -37,9 +37,19 @@ export function ClientDropdown({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
+  const [debouncedQuery, setDebouncedQuery] = useState("")
 
   // Find the selected client
   const selectedClient = clients.find(client => client.email === value)
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery)
+    }, 300) // 300ms delay
+
+    return () => clearTimeout(timer)
+  }, [searchQuery])
 
   // Load initial client data
   useEffect(() => {
@@ -48,18 +58,18 @@ export function ClientDropdown({
     }
   }, [open])
 
-  // Search clients when query changes
+  // Search clients when debounced query changes
   useEffect(() => {
     if (open) {
-      searchClients(searchQuery)
+      searchClients(debouncedQuery)
     }
-  }, [searchQuery, open])
+  }, [debouncedQuery, open])
 
-  const loadClients = async () => {
+  const loadClients = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
-      const data = await fetchClientProfiles()
+      const data = await fetchClientProfiles(50) // Limit initial load
       setClients(data)
     } catch (err) {
       setError('Failed to load clients')
@@ -67,9 +77,9 @@ export function ClientDropdown({
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
-  const searchClients = async (query: string) => {
+  const searchClients = useCallback(async (query: string) => {
     setLoading(true)
     setError(null)
     try {
@@ -81,7 +91,7 @@ export function ClientDropdown({
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   const handleSelect = (client: ClientOption) => {
     onValueChange(client.email, client.name)
