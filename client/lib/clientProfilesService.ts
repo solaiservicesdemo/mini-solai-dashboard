@@ -43,7 +43,7 @@ export async function fetchClientProfiles(limit: number = 200): Promise<ClientOp
 export async function searchClientProfiles(query: string): Promise<ClientOption[]> {
   try {
     if (!query.trim()) {
-      return await fetchClientProfiles(50) // Only get top 50 when no search
+      return await fetchClientProfiles(200) // Get more clients when no search
     }
 
     const { data, error } = await supabase
