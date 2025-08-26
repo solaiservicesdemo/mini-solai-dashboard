@@ -33,6 +33,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { format } from "date-fns";
+import { ClientDropdown } from "@/components/ClientDropdown";
 
 interface CalendarSchedulerModalProps {
   open: boolean;
@@ -81,6 +82,7 @@ export function CalendarSchedulerModal({
   onOpenChange,
 }: CalendarSchedulerModalProps) {
   const [to, setTo] = useState("");
+  const [selectedClientName, setSelectedClientName] = useState("");
   const [duration, setDuration] = useState("30");
   const [meetingTitle, setMeetingTitle] = useState("");
   const [meetingNotes, setMeetingNotes] = useState("");
@@ -220,6 +222,7 @@ export function CalendarSchedulerModal({
 
   const handleClose = () => {
     setTo("");
+    setSelectedClientName("");
     setDuration("30");
     setMeetingTitle("");
     setMeetingNotes("");
@@ -264,14 +267,20 @@ export function CalendarSchedulerModal({
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="recipient">Recipient Email</Label>
-                    <Input
-                      id="recipient"
-                      type="email"
-                      placeholder="client@example.com"
+                    <Label>Select Client</Label>
+                    <ClientDropdown
                       value={to}
-                      onChange={(e) => setTo(e.target.value)}
+                      onValueChange={(email, clientName) => {
+                        setTo(email);
+                        setSelectedClientName(clientName || "");
+                      }}
+                      placeholder="Search clients or enter email..."
                     />
+                    {selectedClientName && (
+                      <p className="text-sm text-muted-foreground">
+                        Selected: {selectedClientName}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
