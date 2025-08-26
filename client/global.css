@@ -284,18 +284,30 @@
     background: rgb(249, 250, 251);
   }
 
-  /* Fix invisible text on hover in client dropdown */
+  /* Fix invisible text on hover in client dropdown with brown color theme */
   .client-dropdown-scroll [cmdk-item] {
-    color: rgb(15, 23, 42) !important; /* Always dark text */
+    color: rgb(120, 83, 70) !important; /* Brown text color */
+  }
+
+  .client-dropdown-scroll [cmdk-item] .font-medium {
+    color: rgb(132, 95, 82) !important; /* Darker brown for client names */
   }
 
   .client-dropdown-scroll [cmdk-item][data-selected="true"] {
-    background-color: rgb(241, 245, 249) !important; /* Light blue background */
-    color: rgb(15, 23, 42) !important; /* Keep dark text */
+    background-color: rgb(254, 249, 195) !important; /* Light yellow-brown background */
+    color: rgb(132, 95, 82) !important; /* Brown text */
+  }
+
+  .client-dropdown-scroll [cmdk-item][data-selected="true"] .font-medium {
+    color: rgb(132, 95, 82) !important; /* Keep brown for client names */
   }
 
   .client-dropdown-scroll [cmdk-item]:hover {
-    background-color: rgb(241, 245, 249) !important;
-    color: rgb(15, 23, 42) !important; /* Ensure text stays visible */
+    background-color: rgb(254, 249, 195) !important;
+    color: rgb(132, 95, 82) !important; /* Brown text on hover */
+  }
+
+  .client-dropdown-scroll [cmdk-item]:hover .font-medium {
+    color: rgb(132, 95, 82) !important; /* Keep brown for client names on hover */
   }
 }
