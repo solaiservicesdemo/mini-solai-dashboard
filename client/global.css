@@ -286,6 +286,18 @@
     background: rgb(249, 250, 251);
   }
 
+  /* Ensure immediate scrollbar response */
+  .client-dropdown-scroll {
+    scrollbar-gutter: stable; /* Reserve space for scrollbar */
+  }
+
+  .client-dropdown-scroll::-webkit-scrollbar,
+  .client-dropdown-scroll::-webkit-scrollbar-track,
+  .client-dropdown-scroll::-webkit-scrollbar-thumb {
+    will-change: auto; /* Optimize for performance */
+    transition-delay: 0s !important; /* No delays */
+  }
+
   /* Fix invisible text on hover in client dropdown with brown color theme */
   .client-dropdown-scroll [cmdk-item] {
     color: rgb(120, 83, 70) !important; /* Brown text color */
