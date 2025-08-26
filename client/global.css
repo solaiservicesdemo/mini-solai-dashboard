@@ -183,18 +183,34 @@
     color: inherit !important;
   }
 
-  /* Specific fixes for primary buttons */
+  /* Specific fixes for button variants */
+  button:hover:not(.bg-primary):not(.bg-blue-600):not(.bg-destructive) {
+    color: inherit !important;
+  }
+
+  /* Primary button hovers should maintain readability */
   .bg-primary:hover {
-    @apply bg-primary/90 text-primary-foreground;
+    @apply bg-primary/90;
+    color: hsl(var(--primary-foreground)) !important;
   }
 
   .bg-blue-600:hover {
-    @apply bg-blue-700 text-white;
+    @apply bg-blue-700;
+    color: white !important;
   }
 
-  /* Fix outline button hover */
-  .border:hover {
-    @apply bg-slate-100 dark:bg-slate-800 text-current;
+  /* Fix outline and ghost button hovers */
+  .border:hover,
+  button[data-variant="outline"]:hover,
+  button[data-variant="ghost"]:hover {
+    background-color: hsl(var(--accent)) !important;
+    color: hsl(var(--accent-foreground)) !important;
+  }
+
+  /* Fix secondary button hovers */
+  button[data-variant="secondary"]:hover {
+    background-color: hsl(var(--secondary) / 0.8) !important;
+    color: hsl(var(--secondary-foreground)) !important;
   }
 
   /* Enhanced calendar styling for multiple selection */
