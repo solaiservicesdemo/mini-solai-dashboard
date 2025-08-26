@@ -129,7 +129,7 @@ export function ClientDropdown({
             value={searchQuery}
             onValueChange={setSearchQuery}
           />
-          <CommandList>
+          <CommandList className="client-dropdown-scroll">
             {loading && (
               <div className="flex items-center justify-center py-6">
                 <Loader2 className="h-4 w-4 animate-spin" />
