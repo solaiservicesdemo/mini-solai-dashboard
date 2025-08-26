@@ -109,7 +109,7 @@ export function ClientDropdown({
             <div className="flex items-center space-x-2 overflow-hidden">
               <User className="h-4 w-4 shrink-0" />
               <span className="truncate">{selectedClient.name}</span>
-              <span className="text-muted-foreground text-sm">({selectedClient.email})</span>
+              <span className="text-slate-600 dark:text-slate-300 text-sm font-medium">({selectedClient.email})</span>
             </div>
           ) : value ? (
             <div className="flex items-center space-x-2">
@@ -122,7 +122,7 @@ export function ClientDropdown({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full min-w-[400px] p-0" align="start">
+      <PopoverContent className="w-full min-w-[400px] max-h-[400px] p-0" align="start">
         <Command>
           <CommandInput 
             placeholder="Search clients or enter email..." 
@@ -182,7 +182,7 @@ export function ClientDropdown({
                         <User className="h-4 w-4 shrink-0 text-muted-foreground" />
                         <div className="flex flex-col overflow-hidden">
                           <span className="font-medium truncate">{client.name}</span>
-                          <span className="text-sm text-muted-foreground truncate">{client.email}</span>
+                          <span className="text-sm text-slate-600 dark:text-slate-300 truncate">{client.email}</span>
                         </div>
                       </CommandItem>
                     ))}
