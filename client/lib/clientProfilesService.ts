@@ -8,9 +8,9 @@ export interface ClientOption {
 }
 
 /**
- * Fetch all client profiles from Supabase
+ * Fetch top client profiles from Supabase (limited for performance)
  */
-export async function fetchClientProfiles(): Promise<ClientOption[]> {
+export async function fetchClientProfiles(limit: number = 50): Promise<ClientOption[]> {
   try {
     const { data, error } = await supabase
       .from('client_profiles')
@@ -18,6 +18,7 @@ export async function fetchClientProfiles(): Promise<ClientOption[]> {
       .not('name', 'is', null)
       .not('email', 'is', null)
       .order('name', { ascending: true })
+      .limit(limit)
 
     if (error) {
       console.error('Error fetching client profiles:', error)
@@ -42,7 +43,7 @@ export async function fetchClientProfiles(): Promise<ClientOption[]> {
 export async function searchClientProfiles(query: string): Promise<ClientOption[]> {
   try {
     if (!query.trim()) {
-      return await fetchClientProfiles()
+      return await fetchClientProfiles(50) // Only get top 50 when no search
     }
 
     const { data, error } = await supabase
