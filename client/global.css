@@ -261,6 +261,8 @@
     border-radius: 6px;
     margin: 2px 0;
     border: 1px solid rgb(229, 231, 235);
+    transition: none !important; /* Remove any transition delays */
+    opacity: 1 !important; /* Always visible */
   }
 
   .client-dropdown-scroll::-webkit-scrollbar-thumb {
