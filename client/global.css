@@ -199,8 +199,8 @@
     color: white !important;
   }
 
-  /* Fix outline and ghost button hovers */
-  .border:hover,
+  /* Fix outline and ghost button hovers - be very specific to only buttons */
+  button.border:hover,
   button[data-variant="outline"]:hover,
   button[data-variant="ghost"]:hover {
     background-color: hsl(var(--accent)) !important;
