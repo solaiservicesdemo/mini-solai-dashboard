@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   Dialog,
@@ -116,9 +117,9 @@ export function QuickComposeModal({
 
     try {
       // This would typically call your n8n webhook
-      const response = await fetch("/api/send-template", {
+      const response = await fetch("https://solaiservicesdemo.app.n8n.cloud/webhook/send-template", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-App-Key": "demo-secret"},
         body: JSON.stringify(emailData),
       });
 

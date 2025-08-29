@@ -1,3 +1,5 @@
+
+
 import { useState } from "react";
 import {
   Dialog,
@@ -33,7 +35,6 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { format } from "date-fns";
-import { ClientDropdown } from "@/components/ClientDropdown";
 
 interface CalendarSchedulerModalProps {
   open: boolean;
@@ -54,6 +55,11 @@ interface CalendarEvent {
   title: string;
 }
 
+// --- n8n webhooks (production) ---
+const N8N_BOOK_NOW_URL =
+  "https://solaiservicesdemo.app.n8n.cloud/webhook/book-now";
+const N8N_APP_KEY = "demo-secret";
+
 const durationOptions = [
   { value: "15", label: "15 minutes" },
   { value: "30", label: "30 minutes" },
@@ -65,16 +71,8 @@ const durationOptions = [
 
 // Mock calendar events for availability checking
 const mockCalendarEvents: CalendarEvent[] = [
-  {
-    start: new Date(2025, 0, 21, 9, 0), // 9:00 AM
-    end: new Date(2025, 0, 21, 10, 0), // 10:00 AM
-    title: "Team meeting",
-  },
-  {
-    start: new Date(2025, 0, 21, 14, 0), // 2:00 PM
-    end: new Date(2025, 0, 21, 15, 0), // 3:00 PM
-    title: "Client call",
-  },
+  { start: new Date(2025, 0, 21, 9, 0), end: new Date(2025, 0, 21, 10, 0), title: "Team meeting" },
+  { start: new Date(2025, 0, 21, 14, 0), end: new Date(2025, 0, 21, 15, 0), title: "Client call" },
 ];
 
 export function CalendarSchedulerModal({
@@ -82,27 +80,18 @@ export function CalendarSchedulerModal({
   onOpenChange,
 }: CalendarSchedulerModalProps) {
   const [to, setTo] = useState("");
-  const [selectedClientName, setSelectedClientName] = useState("");
   const [duration, setDuration] = useState("30");
   const [meetingTitle, setMeetingTitle] = useState("");
   const [meetingNotes, setMeetingNotes] = useState("");
-  const [selectedDates, setSelectedDates] = useState<Date[] | undefined>(
-    undefined,
-  );
+  const [selectedDates, setSelectedDates] = useState<Date[] | undefined>(undefined);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [maxSlots, setMaxSlots] = useState("3");
   const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState<"compose" | "edit-slots" | "review">(
-    "compose",
-  );
+  const [step, setStep] = useState<"compose" | "edit-slots" | "review">("compose");
   const [editingSlot, setEditingSlot] = useState<string | null>(null);
 
   // Check if a time slot conflicts with existing calendar events
-  const checkAvailability = (
-    date: Date,
-    startTime: string,
-    endTime: string,
-  ): boolean => {
+  const checkAvailability = (date: Date, startTime: string, endTime: string): boolean => {
     const [startHour, startMinute] = startTime.split(":").map(Number);
     const [endHour, endMinute] = endTime.split(":").map(Number);
 
@@ -121,28 +110,16 @@ export function CalendarSchedulerModal({
     if (!selectedDates || selectedDates.length === 0) return;
 
     const workingHours = [
-      "09:00",
-      "09:30",
-      "10:00",
-      "10:30",
-      "11:00",
-      "11:30",
-      "13:00",
-      "13:30",
-      "14:00",
-      "14:30",
-      "15:00",
-      "15:30",
-      "16:00",
-      "16:30",
+      "09:00","09:30","10:00","10:30","11:00","11:30",
+      "13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30",
     ];
 
-    const durationMins = parseInt(duration);
+    const durationMins = parseInt(duration, 10);
     const newSlots: TimeSlot[] = [];
 
     selectedDates.forEach((date) => {
       workingHours.forEach((startTime) => {
-        if (newSlots.length >= parseInt(maxSlots)) return;
+        if (newSlots.length >= parseInt(maxSlots, 10)) return;
 
         const [hour, minute] = startTime.split(":").map(Number);
         const endTime = new Date(date);
@@ -163,7 +140,7 @@ export function CalendarSchedulerModal({
       });
     });
 
-    setTimeSlots(newSlots.slice(0, parseInt(maxSlots)));
+    setTimeSlots(newSlots.slice(0, parseInt(maxSlots, 10)));
     setStep("edit-slots");
   };
 
@@ -187,32 +164,26 @@ export function CalendarSchedulerModal({
   };
 
   const updateTimeSlot = (id: string, updates: Partial<TimeSlot>) => {
-    setTimeSlots((prev) =>
-      prev.map((slot) => (slot.id === id ? { ...slot, ...updates } : slot)),
-    );
+    setTimeSlots((prev) => prev.map((slot) => (slot.id === id ? { ...slot, ...updates } : slot)));
   };
 
+  // Your original proposal sender (kept as-is; not used for booking)
   const handleSendProposal = async () => {
     setIsLoading(true);
-
     try {
       const proposalData = {
         to,
         meetingTitle,
         meetingNotes,
         timeSlots,
-        duration: parseInt(duration),
+        duration: parseInt(duration, 10),
       };
-
       const response = await fetch("/api/propose-times", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(proposalData),
       });
-
-      if (response.ok) {
-        handleClose();
-      }
+      if (response.ok) handleClose();
     } catch (error) {
       console.error("Failed to send proposal:", error);
     } finally {
@@ -220,9 +191,63 @@ export function CalendarSchedulerModal({
     }
   };
 
+  // NEW: book immediately using the FIRST time slot (demo)
+  const handleBookNow = async () => {
+    if (!to) {
+      alert("Please enter a recipient email.");
+      return;
+    }
+    if (timeSlots.length === 0) {
+      alert("Please generate at least one time slot first.");
+      return;
+    }
+    const first = timeSlots[0];
+    const tz =
+      Intl.DateTimeFormat().resolvedOptions().timeZone || "America/New_York";
+
+    const payload = {
+      to,
+      title: meetingTitle || "Meeting",
+      date: format(first.date, "yyyy-MM-dd"),
+      time: first.start, // "HH:mm"
+      tz,
+      durationMins: parseInt(duration, 10),
+      notes: meetingNotes || "",
+    };
+
+    setIsLoading(true);
+    try {
+      const res = await fetch(N8N_BOOK_NOW_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-App-Key": N8N_APP_KEY,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "");
+        throw new Error(`Book failed: ${res.status} ${txt}`);
+      }
+
+      const data = await res.json().catch(() => ({}));
+      alert(
+        data?.ok
+          ? `Event created!\n\nEvent ID: ${data.eventId}\nLink: ${data.htmlLink ?? "(open in Calendar)"}`
+          : "Event created."
+      );
+      handleClose();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to book calendar event.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleClose = () => {
     setTo("");
-    setSelectedClientName("");
     setDuration("30");
     setMeetingTitle("");
     setMeetingNotes("");
@@ -236,7 +261,10 @@ export function CalendarSchedulerModal({
   const formatDateRange = (dates: Date[] | undefined) => {
     if (!dates || dates.length === 0) return "No dates selected";
     if (dates.length === 1) return format(dates[0], "MMM dd, yyyy");
-    return `${format(dates[0], "MMM dd")} - ${format(dates[dates.length - 1], "MMM dd, yyyy")}`;
+    return `${format(dates[0], "MMM dd")} - ${format(
+      dates[dates.length - 1],
+      "MMM dd, yyyy"
+    )}`;
   };
 
   return (
@@ -246,12 +274,7 @@ export function CalendarSchedulerModal({
           <DialogTitle className="flex items-center">
             <CalendarIcon className="mr-2 h-5 w-5" />
             Schedule Meeting
-            <Button
-              variant="ghost"
-              size="sm"
-              className="ml-auto"
-              onClick={handleClose}
-            >
+            <Button variant="ghost" size="sm" className="ml-auto" onClick={handleClose}>
               <X className="h-4 w-4" />
             </Button>
           </DialogTitle>
@@ -267,20 +290,14 @@ export function CalendarSchedulerModal({
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Select Client</Label>
-                    <ClientDropdown
+                    <Label htmlFor="recipient">Recipient Email</Label>
+                    <Input
+                      id="recipient"
+                      type="email"
+                      placeholder="client@example.com"
                       value={to}
-                      onValueChange={(email, clientName) => {
-                        setTo(email);
-                        setSelectedClientName(clientName || "");
-                      }}
-                      placeholder="Search clients or enter email..."
+                      onChange={(e) => setTo(e.target.value)}
                     />
-                    {selectedClientName && (
-                      <p className="text-sm text-muted-foreground">
-                        Selected: {selectedClientName}
-                      </p>
-                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -345,9 +362,7 @@ export function CalendarSchedulerModal({
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">
-                    Select Available Dates
-                  </CardTitle>
+                  <CardTitle className="text-lg">Select Available Dates</CardTitle>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
                     Choose multiple dates to give more options
                   </p>
@@ -356,19 +371,14 @@ export function CalendarSchedulerModal({
                   <Calendar
                     mode="multiple"
                     selected={selectedDates}
-                    onSelect={(dates) => {
-                      console.log("Calendar dates selected:", dates);
-                      setSelectedDates(dates || []);
-                    }}
+                    onSelect={(dates) => setSelectedDates(dates || [])}
                     disabled={(date) => {
                       const today = new Date();
                       today.setHours(0, 0, 0, 0);
                       return date < today;
                     }}
                     className="rounded-md border w-full"
-                    modifiers={{
-                      selected: selectedDates,
-                    }}
+                    modifiers={{ selected: selectedDates }}
                     modifiersStyles={{
                       selected: {
                         backgroundColor: "hsl(var(--primary))",
@@ -384,8 +394,7 @@ export function CalendarSchedulerModal({
                         Selected Dates: {formatDateRange(selectedDates)}
                       </div>
                       <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                        {selectedDates.length} date
-                        {selectedDates.length !== 1 ? "s" : ""} selected
+                        {selectedDates.length} date{selectedDates.length !== 1 ? "s" : ""} selected
                       </div>
                     </div>
                   )}
@@ -398,8 +407,7 @@ export function CalendarSchedulerModal({
                   <br />
                   <strong>Time Zone:</strong> EST
                   <br />
-                  <strong>Integration:</strong> Google Calendar availability
-                  checking
+                  <strong>Integration:</strong> Google Calendar availability checking
                 </div>
               </div>
             </div>
@@ -423,15 +431,10 @@ export function CalendarSchedulerModal({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {timeSlots.map((slot, index) => (
-                <Card
-                  key={slot.id}
-                  className={`${slot.available ? "border-green-200" : "border-red-200"}`}
-                >
+                <Card key={slot.id} className={`${slot.available ? "border-green-200" : "border-red-200"}`}>
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <Badge
-                        variant={slot.available ? "default" : "destructive"}
-                      >
+                      <Badge variant={slot.available ? "default" : "destructive"}>
                         {slot.available ? (
                           <>
                             <CheckCircle className="mr-1 h-3 w-3" />
@@ -448,19 +451,11 @@ export function CalendarSchedulerModal({
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() =>
-                            setEditingSlot(
-                              editingSlot === slot.id ? null : slot.id,
-                            )
-                          }
+                          onClick={() => setEditingSlot(editingSlot === slot.id ? null : slot.id)}
                         >
                           <Edit3 className="h-3 w-3" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeTimeSlot(slot.id)}
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => removeTimeSlot(slot.id)}>
                           <Trash2 className="h-3 w-3" />
                         </Button>
                       </div>
@@ -476,16 +471,12 @@ export function CalendarSchedulerModal({
                           <Input
                             type="time"
                             value={slot.start}
-                            onChange={(e) =>
-                              updateTimeSlot(slot.id, { start: e.target.value })
-                            }
+                            onChange={(e) => updateTimeSlot(slot.id, { start: e.target.value })}
                           />
                           <Input
                             type="time"
                             value={slot.end}
-                            onChange={(e) =>
-                              updateTimeSlot(slot.id, { end: e.target.value })
-                            }
+                            onChange={(e) => updateTimeSlot(slot.id, { end: e.target.value })}
                           />
                         </div>
                       ) : (
@@ -509,27 +500,16 @@ export function CalendarSchedulerModal({
                 <CardTitle>Meeting Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div>
-                  <strong>Meeting:</strong> {meetingTitle}
-                </div>
-                <div>
-                  <strong>Recipient:</strong> {to}
-                </div>
-                <div>
-                  <strong>Duration:</strong> {duration} minutes
-                </div>
-                {meetingNotes && (
-                  <div>
-                    <strong>Notes:</strong> {meetingNotes}
-                  </div>
-                )}
+                <div><strong>Meeting:</strong> {meetingTitle}</div>
+                <div><strong>Recipient:</strong> {to}</div>
+                <div><strong>Duration:</strong> {duration} minutes</div>
+                {meetingNotes && <div><strong>Notes:</strong> {meetingNotes}</div>}
 
                 <div className="space-y-2">
                   <strong>Time Options:</strong>
                   {timeSlots.map((slot, index) => (
                     <div key={slot.id} className="text-sm">
-                      Option {index + 1}: {format(slot.date, "MMM dd, yyyy")} at{" "}
-                      {slot.start} - {slot.end}
+                      Option {index + 1}: {format(slot.date, "MMM dd, yyyy")} at {slot.start} - {slot.end}
                     </div>
                   ))}
                 </div>
@@ -544,24 +524,17 @@ export function CalendarSchedulerModal({
               <CardContent>
                 <div className="space-y-3 p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
                   <div>
-                    <Label className="text-xs text-slate-600 dark:text-slate-400">
-                      Subject:
-                    </Label>
-                    <div className="font-medium">
-                      Meeting invitation: {meetingTitle}
-                    </div>
+                    <Label className="text-xs text-slate-600 dark:text-slate-400">Subject:</Label>
+                    <div className="font-medium">Meeting invitation: {meetingTitle}</div>
                   </div>
                   <div>
-                    <Label className="text-xs text-slate-600 dark:text-slate-400">
-                      Body:
-                    </Label>
+                    <Label className="text-xs text-slate-600 dark:text-slate-400">Body:</Label>
                     <div className="whitespace-pre-wrap text-sm">
-                      Hi there, I'd like to schedule a meeting with you. Here
-                      are the available time options:
+                      Hi there, I'd like to schedule a meeting with you. Here are the available time options:
                       {timeSlots
                         .map(
                           (slot, index) =>
-                            `Option ${index + 1}: ${format(slot.date, "MMM dd, yyyy")} at ${slot.start} - ${slot.end}\n`,
+                            `Option ${index + 1}: ${format(slot.date, "MMM dd, yyyy")} at ${slot.start} - ${slot.end}\n`
                         )
                         .join("")}
                       Please reply with 1, 2, or 3 to book automatically.
@@ -596,13 +569,7 @@ export function CalendarSchedulerModal({
             {step === "compose" && (
               <Button
                 onClick={generateTimeSlots}
-                disabled={
-                  !to ||
-                  !meetingTitle ||
-                  !selectedDates ||
-                  selectedDates.length === 0 ||
-                  isLoading
-                }
+                disabled={!to || !meetingTitle || !selectedDates || selectedDates.length === 0 || isLoading}
                 className="bg-blue-600 hover:bg-blue-700"
               >
                 {isLoading ? (
@@ -627,20 +594,25 @@ export function CalendarSchedulerModal({
             )}
 
             {step === "review" && (
-              <Button
-                onClick={handleSendProposal}
-                disabled={isLoading}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                {isLoading ? (
-                  <>Sending...</>
-                ) : (
-                  <>
-                    <Send className="mr-2 h-4 w-4" />
-                    Send Proposal
-                  </>
-                )}
-              </Button>
+              <>
+                {/* keep your original proposal sender if you still want it */}
+                <Button onClick={handleSendProposal} disabled={isLoading} className="bg-blue-600 hover:bg-blue-700">
+                  {isLoading ? (
+                    <>Sending...</>
+                  ) : (
+                    <>
+                      <Send className="mr-2 h-4 w-4" />
+                      Send Proposal
+                    </>
+                  )}
+                </Button>
+
+                {/* NEW: instant booking using first slot */}
+                <Button onClick={handleBookNow} disabled={isLoading || timeSlots.length === 0}>
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  Book & Invite Now
+                </Button>
+              </>
             )}
           </div>
         </div>
@@ -648,3 +620,4 @@ export function CalendarSchedulerModal({
     </Dialog>
   );
 }
+
